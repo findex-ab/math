@@ -1,0 +1,16 @@
+export declare const sum: (arr: number[]) => number;
+export declare const average: (arr: number[]) => number;
+export declare const cantor: (k1: number, k2: number) => number;
+export declare const decant: (c: number) => [number, number];
+export declare const lerp: (vFrom: number, vTo: number, scale: number) => number;
+export declare const clamp: (value: number, min: number, max: number) => number;
+export declare const fract: (x: number) => number;
+export declare const smoothstep: (edge0: number, edge1: number, value: number) => number;
+export declare const sgt: (a: number, b: number, s: number) => number;
+export declare const slt: (a: number, b: number, s: number) => number;
+export declare const smin: (a: number, b: number, k: number) => number;
+export declare const smax: (a: number, b: number, k: number) => number;
+export declare const snap: (x: number, s: number) => number;
+export declare const sign: (x: number) => number;
+export declare const signStr: (n: number) => string;
+export declare const mod: (n: number, div: number) => number;
