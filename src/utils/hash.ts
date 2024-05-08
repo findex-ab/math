@@ -14,6 +14,10 @@ export const hashu32 = (i: number) => {
   return toUint32(i * k + i + i * k + k);
 };
 
+export const hashu32f = (i: number) => {
+  return hashu32(i) / 0xffffffff;
+}
+
 export const hash21f = (
   ix: number,
   iy: number,

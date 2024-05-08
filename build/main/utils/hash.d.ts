@@ -1,4 +1,5 @@
 export declare const hashu32: (i: number) => number;
+export declare const hashu32f: (i: number) => number;
 export declare const hash21f: (ix: number, iy: number, is?: number) => number;
 export declare const hashAny: (v: any) => string;
 export declare const hashAnyu32: (v: any) => number;
