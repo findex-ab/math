@@ -6,3 +6,4 @@ export declare const floatBitsToUint: (f: number) => number;
 export declare const toUint32: (f: number) => number;
 export declare const hexToUint32: (hex: string) => number;
 export declare const nthByte: (val: number, n: number) => number;
+export declare const noise2D: (x: number, y: number, seed?: number, octaves?: number, freq?: number) => number;

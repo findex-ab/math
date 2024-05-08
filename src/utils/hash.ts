@@ -1,5 +1,5 @@
 import { isBoolean, isFloat, isHTMLElement } from './is';
-import { cantor } from './etc';
+import { cantor, fract, lerp } from './etc';
 
 export const hashu32 = (i: number) => {
   i = toUint32(i);
@@ -96,3 +96,39 @@ export const hexToUint32 = (hex: string): number => {
 export const nthByte = (val: number, n: number): number => {
   return (val >> (n * 8)) & 0xff;
 };
+
+export const noise2D = (
+  x: number,
+  y: number,
+  seed: number = 1.284715,
+  octaves: number = 1,
+  freq: number = 1.0
+): number => {
+  const F = (x: number, y: number, seed: number = 1.284715) => {
+    const mix = lerp
+    const r = hash21f
+    const ix = Math.floor(x)
+    const iy = Math.floor(y)
+    let lx = fract(x)
+    lx = lx * lx * (3.0 - 2.0 * lx)
+    let ly = fract(y)
+    ly = ly * ly * (3.0 - 2.0 * ly)
+    const ab = mix(r(ix + 0, iy + 0, seed), r(ix + 1, iy + 0, seed), lx)
+    const cd = mix(r(ix + 0, iy + 1, seed), r(ix + 1, iy + 1, seed), lx)
+    return mix(ab, cd, ly)
+  }
+
+  let n = 0.0
+  let div = 0.0
+  let amp = 1.0
+  let q = freq
+
+  for (let i = 0; i < octaves; i++) {
+    n += amp * F(x * q, y * q, seed)
+    div += amp
+    amp *= 0.5
+    q *= 2.0
+  }
+
+  return n / div
+}
