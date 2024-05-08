@@ -1,13 +1,13 @@
 {
   "name": "math",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "shared definitions",
   "bin": {
     "math": "./bin/math"
   },
-  "main": "build/main/math/index.js",
-  "typings": "build/module/math/index.d.ts",
-  "module": "build/module/math/index.js",
+  "main": "build/main/index.js",
+  "typings": "build/module/index.d.ts",
+  "module": "build/module/index.js",
   "repository": "https://github.com/findex-ab/mat h",
   "license": "MIT",
   "scripts": {
