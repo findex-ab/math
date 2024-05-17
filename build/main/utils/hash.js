@@ -93,7 +93,7 @@ exports.toUint64 = toUint64;
 const toUint32 = (f) => {
     const buffer = new ArrayBuffer(4);
     const view = new DataView(buffer);
-    (0, is_1.isFloat)(f) ? view.setFloat32(0, f) : view.setUint32(0, f);
+    (0, is_1.isFloat)(f) ? view.setFloat32(0, f) : view.setUint32(0, Number(f));
     return view.getUint32(0);
 };
 exports.toUint32 = toUint32;

@@ -97,10 +97,10 @@ export const toUint64 = (f: (number | bigint)): bigint => {
   return view.getBigUint64(0);
 };
 
-export const toUint32 = (f: number): number => {
+export const toUint32 = (f: (number | bigint)): number => {
   const buffer = new ArrayBuffer(4);
   const view = new DataView(buffer);
-  isFloat(f) ? view.setFloat32(0, f) : view.setUint32(0, f);
+  isFloat(f) ? view.setFloat32(0, f) : view.setUint32(0, Number(f));
   return view.getUint32(0);
 };
 

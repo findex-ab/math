@@ -82,7 +82,7 @@ export const toUint64 = (f) => {
 export const toUint32 = (f) => {
     const buffer = new ArrayBuffer(4);
     const view = new DataView(buffer);
-    isFloat(f) ? view.setFloat32(0, f) : view.setUint32(0, f);
+    isFloat(f) ? view.setFloat32(0, f) : view.setUint32(0, Number(f));
     return view.getUint32(0);
 };
 export const hexToUint32 = (hex) => {
