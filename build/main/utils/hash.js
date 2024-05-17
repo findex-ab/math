@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.toUint32 = exports.floatBitsToUint = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.hashu32f = exports.hashu32 = void 0;
+exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.toUint32 = exports.toUint64 = exports.floatBitsToUint64 = exports.floatBitsToUint = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.hashu32f = exports.hashu32 = void 0;
 const is_1 = require("./is");
 const etc_1 = require("./etc");
 const hashu32 = (i) => {
@@ -76,10 +76,24 @@ const floatBitsToUint = (f) => {
     return view.getUint32(0);
 };
 exports.floatBitsToUint = floatBitsToUint;
+const floatBitsToUint64 = (f) => {
+    const buffer = new ArrayBuffer(8);
+    const view = new DataView(buffer);
+    view.setFloat64(0, f);
+    return view.getBigUint64(0);
+};
+exports.floatBitsToUint64 = floatBitsToUint64;
+const toUint64 = (f) => {
+    const buffer = new ArrayBuffer(8);
+    const view = new DataView(buffer);
+    (0, is_1.isFloat)(f) ? view.setFloat64(0, f) : view.setBigUint64(0, BigInt(f));
+    return view.getBigUint64(0);
+};
+exports.toUint64 = toUint64;
 const toUint32 = (f) => {
     const buffer = new ArrayBuffer(4);
     const view = new DataView(buffer);
-    view.setUint32(0, (0, is_1.isFloat)(f) ? (0, exports.floatBitsToUint)(f) : f);
+    (0, is_1.isFloat)(f) ? view.setFloat32(0, f) : view.setUint32(0, f);
     return view.getUint32(0);
 };
 exports.toUint32 = toUint32;

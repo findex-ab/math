@@ -16,7 +16,7 @@ export const hashu32 = (i: number) => {
 
 export const hashu32f = (i: number) => {
   return hashu32(i) / 0xffffffff;
-}
+};
 
 export const hash21f = (
   ix: number,
@@ -83,10 +83,24 @@ export const floatBitsToUint = (f: number): number => {
   return view.getUint32(0);
 };
 
+export const floatBitsToUint64 = (f: number): bigint => {
+  const buffer = new ArrayBuffer(8);
+  const view = new DataView(buffer);
+  view.setFloat64(0, f);
+  return view.getBigUint64(0);
+};
+
+export const toUint64 = (f: number): bigint => {
+  const buffer = new ArrayBuffer(8);
+  const view = new DataView(buffer);
+  isFloat(f) ? view.setFloat64(0, f) : view.setBigUint64(0, BigInt(f));
+  return view.getBigUint64(0);
+};
+
 export const toUint32 = (f: number): number => {
   const buffer = new ArrayBuffer(4);
   const view = new DataView(buffer);
-  view.setUint32(0, isFloat(f) ? floatBitsToUint(f) : f);
+  isFloat(f) ? view.setFloat32(0, f) : view.setUint32(0, f);
   return view.getUint32(0);
 };
 
@@ -106,33 +120,33 @@ export const noise2D = (
   y: number,
   seed: number = 1.284715,
   octaves: number = 1,
-  freq: number = 1.0
+  freq: number = 1.0,
 ): number => {
   const F = (x: number, y: number, seed: number = 1.284715) => {
-    const mix = lerp
-    const r = hash21f
-    const ix = Math.floor(x)
-    const iy = Math.floor(y)
-    let lx = fract(x)
-    lx = lx * lx * (3.0 - 2.0 * lx)
-    let ly = fract(y)
-    ly = ly * ly * (3.0 - 2.0 * ly)
-    const ab = mix(r(ix + 0, iy + 0, seed), r(ix + 1, iy + 0, seed), lx)
-    const cd = mix(r(ix + 0, iy + 1, seed), r(ix + 1, iy + 1, seed), lx)
-    return mix(ab, cd, ly)
-  }
+    const mix = lerp;
+    const r = hash21f;
+    const ix = Math.floor(x);
+    const iy = Math.floor(y);
+    let lx = fract(x);
+    lx = lx * lx * (3.0 - 2.0 * lx);
+    let ly = fract(y);
+    ly = ly * ly * (3.0 - 2.0 * ly);
+    const ab = mix(r(ix + 0, iy + 0, seed), r(ix + 1, iy + 0, seed), lx);
+    const cd = mix(r(ix + 0, iy + 1, seed), r(ix + 1, iy + 1, seed), lx);
+    return mix(ab, cd, ly);
+  };
 
-  let n = 0.0
-  let div = 0.0
-  let amp = 1.0
-  let q = freq
+  let n = 0.0;
+  let div = 0.0;
+  let amp = 1.0;
+  let q = freq;
 
   for (let i = 0; i < octaves; i++) {
-    n += amp * F(x * q, y * q, seed)
-    div += amp
-    amp *= 0.5
-    q *= 2.0
+    n += amp * F(x * q, y * q, seed);
+    div += amp;
+    amp *= 0.5;
+    q *= 2.0;
   }
 
-  return n / div
-}
+  return n / div;
+};
