@@ -90,7 +90,7 @@ export const floatBitsToUint64 = (f: number): bigint => {
   return view.getBigUint64(0);
 };
 
-export const toUint64 = (f: number): bigint => {
+export const toUint64 = (f: (number | bigint)): bigint => {
   const buffer = new ArrayBuffer(8);
   const view = new DataView(buffer);
   isFloat(f) ? view.setFloat64(0, f) : view.setBigUint64(0, BigInt(f));
