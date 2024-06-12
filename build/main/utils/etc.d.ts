@@ -14,3 +14,5 @@ export declare const snap: (x: number, s: number) => number;
 export declare const sign: (x: number) => number;
 export declare const signStr: (n: number) => string;
 export declare const mod: (n: number, div: number) => number;
+export declare const magnitude: (arr: number[]) => number;
+export declare const normalize: (arr: number[], epsilon?: number) => number[];

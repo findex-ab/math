@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.average = exports.sum = void 0;
+exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.average = exports.sum = void 0;
 const sum = (arr) => arr.reduce((a, b) => a + b, 0);
 exports.sum = sum;
 const average = (arr) => arr.length <= 0 ? 0 : (0, exports.sum)(arr) / arr.length;
@@ -62,3 +62,14 @@ const mod = (n, div) => {
     return n;
 };
 exports.mod = mod;
+const magnitude = (arr) => {
+    return Math.sqrt((0, exports.sum)(arr.map(x => (x * x))));
+};
+exports.magnitude = magnitude;
+const normalize = (arr, epsilon = 0.0000005) => {
+    const mag = (0, exports.magnitude)(arr);
+    if (mag <= epsilon)
+        return arr;
+    return arr.map(x => (x / mag));
+};
+exports.normalize = normalize;

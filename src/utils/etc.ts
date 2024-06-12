@@ -63,3 +63,13 @@ export const mod = (n: number, div: number): number => {
   if (n < 0) return div;
   return n;
 };
+
+export const magnitude = (arr: number[]): number => {
+  return Math.sqrt(sum(arr.map(x => (x * x))));
+}
+
+export const normalize = (arr: number[], epsilon: number = 0.0000005): number[] => {
+  const mag = magnitude(arr);
+  if (mag <= epsilon) return arr;
+  return arr.map(x => (x / mag));
+}

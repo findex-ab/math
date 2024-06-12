@@ -44,3 +44,12 @@ export const mod = (n, div) => {
         return div;
     return n;
 };
+export const magnitude = (arr) => {
+    return Math.sqrt(sum(arr.map(x => (x * x))));
+};
+export const normalize = (arr, epsilon = 0.0000005) => {
+    const mag = magnitude(arr);
+    if (mag <= epsilon)
+        return arr;
+    return arr.map(x => (x / mag));
+};
