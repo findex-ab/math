@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.average = exports.sum = void 0;
+exports.randomFloats = exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.average = exports.sum = void 0;
+const array_1 = require("./array");
+const hash_1 = require("./hash");
 const sum = (arr) => arr.reduce((a, b) => a + b, 0);
 exports.sum = sum;
 const average = (arr) => arr.length <= 0 ? 0 : (0, exports.sum)(arr) / arr.length;
@@ -63,13 +65,24 @@ const mod = (n, div) => {
 };
 exports.mod = mod;
 const magnitude = (arr) => {
-    return Math.sqrt((0, exports.sum)(arr.map(x => (x * x))));
+    return Math.sqrt((0, exports.sum)(arr.map((x) => x * x)));
 };
 exports.magnitude = magnitude;
 const normalize = (arr, epsilon = 0.0000005) => {
     const mag = (0, exports.magnitude)(arr);
     if (mag <= epsilon)
         return arr;
-    return arr.map(x => (x / mag));
+    return arr.map((x) => x / mag);
 };
 exports.normalize = normalize;
+const randomFloats = (count, options = {}) => {
+    let seed = options.seed || 509813;
+    const min = options.min || 0;
+    const max = options.max || 1;
+    return (0, array_1.range)(count).map((i) => {
+        const f = (0, hash_1.randomFloat)(seed, min, max);
+        seed = (0, hash_1.toUint32)(seed + (0, hash_1.hashu32)(seed) + i);
+        return f;
+    });
+};
+exports.randomFloats = randomFloats;

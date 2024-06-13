@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.toUint32 = exports.toUint64 = exports.floatBitsToUint64 = exports.floatBitsToUint = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.hashu32f = exports.hashu32 = void 0;
+exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.toUint32 = exports.toUint64 = exports.floatBitsToUint64 = exports.floatBitsToUint = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.randomFloat = exports.hashu32f = exports.hashu32 = void 0;
 const is_1 = require("./is");
 const etc_1 = require("./etc");
 const hashu32 = (i) => {
@@ -20,6 +20,10 @@ const hashu32f = (i) => {
     return (0, exports.hashu32)(i) / 0xffffffff;
 };
 exports.hashu32f = hashu32f;
+const randomFloat = (seed, min = 0, max = 1) => {
+    return (0, etc_1.clamp)(min + (0, exports.hashu32f)(seed) * (max - min), min, max);
+};
+exports.randomFloat = randomFloat;
 const hash21f = (ix, iy, is = 1.98472) => {
     let x = (0, exports.toUint32)(ix);
     let y = (0, exports.toUint32)(iy);

@@ -1,3 +1,5 @@
+import { range } from './array';
+import { hashu32, randomFloat, toUint32 } from './hash';
 export const sum = (arr) => arr.reduce((a, b) => a + b, 0);
 export const average = (arr) => arr.length <= 0 ? 0 : sum(arr) / arr.length;
 export const cantor = (k1, k2) => {
@@ -45,11 +47,21 @@ export const mod = (n, div) => {
     return n;
 };
 export const magnitude = (arr) => {
-    return Math.sqrt(sum(arr.map(x => (x * x))));
+    return Math.sqrt(sum(arr.map((x) => x * x)));
 };
 export const normalize = (arr, epsilon = 0.0000005) => {
     const mag = magnitude(arr);
     if (mag <= epsilon)
         return arr;
-    return arr.map(x => (x / mag));
+    return arr.map((x) => x / mag);
+};
+export const randomFloats = (count, options = {}) => {
+    let seed = options.seed || 509813;
+    const min = options.min || 0;
+    const max = options.max || 1;
+    return range(count).map((i) => {
+        const f = randomFloat(seed, min, max);
+        seed = toUint32(seed + hashu32(seed) + i);
+        return f;
+    });
 };

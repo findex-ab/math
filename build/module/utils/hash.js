@@ -1,5 +1,5 @@
 import { isBoolean, isFloat, isHTMLElement } from './is';
-import { cantor, fract, lerp } from './etc';
+import { cantor, clamp, fract, lerp } from './etc';
 export const hashu32 = (i) => {
     i = toUint32(i);
     const s = (i >> 3) * 12;
@@ -14,6 +14,9 @@ export const hashu32 = (i) => {
 };
 export const hashu32f = (i) => {
     return hashu32(i) / 0xffffffff;
+};
+export const randomFloat = (seed, min = 0, max = 1) => {
+    return clamp(min + hashu32f(seed) * (max - min), min, max);
 };
 export const hash21f = (ix, iy, is = 1.98472) => {
     let x = toUint32(ix);

@@ -1,3 +1,6 @@
+import { range } from './array';
+import { hashu32, randomFloat, toUint32 } from './hash';
+
 export const sum = (arr: number[]): number => arr.reduce((a, b) => a + b, 0);
 
 export const average = (arr: number[]): number =>
@@ -65,11 +68,34 @@ export const mod = (n: number, div: number): number => {
 };
 
 export const magnitude = (arr: number[]): number => {
-  return Math.sqrt(sum(arr.map(x => (x * x))));
-}
+  return Math.sqrt(sum(arr.map((x) => x * x)));
+};
 
-export const normalize = (arr: number[], epsilon: number = 0.0000005): number[] => {
+export const normalize = (
+  arr: number[],
+  epsilon: number = 0.0000005,
+): number[] => {
   const mag = magnitude(arr);
   if (mag <= epsilon) return arr;
-  return arr.map(x => (x / mag));
-}
+  return arr.map((x) => x / mag);
+};
+
+export type RandomFloatsOptions = {
+  min?: number;
+  max?: number;
+  seed?: number;
+};
+
+export const randomFloats = (
+  count: number,
+  options: RandomFloatsOptions = {},
+): number[] => {
+  let seed: number = options.seed || 509813;
+  const min = options.min || 0;
+  const max = options.max || 1;
+  return range(count).map((i) => {
+    const f = randomFloat(seed, min, max);
+    seed = toUint32(seed + hashu32(seed) + i);
+    return f;
+  });
+};

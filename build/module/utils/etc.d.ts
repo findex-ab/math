@@ -16,3 +16,9 @@ export declare const signStr: (n: number) => string;
 export declare const mod: (n: number, div: number) => number;
 export declare const magnitude: (arr: number[]) => number;
 export declare const normalize: (arr: number[], epsilon?: number) => number[];
+export type RandomFloatsOptions = {
+    min?: number;
+    max?: number;
+    seed?: number;
+};
+export declare const randomFloats: (count: number, options?: RandomFloatsOptions) => number[];
