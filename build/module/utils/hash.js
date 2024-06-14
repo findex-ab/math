@@ -47,13 +47,13 @@ export const hashu32_v1 = (i) => {
     x ^= x << 17;
     x ^= x >> 13;
     x ^= x << 5;
-    x *= 0xC3E0ACF7;
+    x *= 1013;
     y ^= x;
     y ^= y << 17;
     y ^= y >> 13;
     y ^= y << 5;
-    y *= 0x1BBD52FA;
-    return U((x * 13 + 8 * y) * 7);
+    y *= 3013;
+    return U((x * 13 + 5 * y) * 3);
 };
 export const hashu32f_v1 = (i) => {
     return hashu32_v1(i) / 0xffffffff;
