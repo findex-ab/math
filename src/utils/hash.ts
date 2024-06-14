@@ -1,6 +1,34 @@
 import { isBoolean, isFloat, isHTMLElement } from './is';
 import { cantor, clamp, fract, lerp } from './etc';
 
+export const floatBitsToUint = (f: number): number => {
+  const buffer = new ArrayBuffer(4);
+  const view = new DataView(buffer);
+  view.setFloat32(0, f);
+  return view.getUint32(0);
+};
+
+export const floatBitsToUint64 = (f: number): bigint => {
+  const buffer = new ArrayBuffer(8);
+  const view = new DataView(buffer);
+  view.setFloat64(0, f);
+  return view.getBigUint64(0);
+};
+
+export const toUint64 = (f: number | bigint): bigint => {
+  const buffer = new ArrayBuffer(8);
+  const view = new DataView(buffer);
+  isFloat(f) ? view.setFloat64(0, f) : view.setBigUint64(0, BigInt(f));
+  return view.getBigUint64(0);
+};
+
+export const toUint32 = (f: number | bigint): number => {
+  const buffer = new ArrayBuffer(4);
+  const view = new DataView(buffer);
+  isFloat(f) ? view.setFloat32(0, f) : view.setUint32(0, Number(f));
+  return view.getUint32(0);
+};
+
 export const hashu32 = (i: number) => {
   i = toUint32(i);
   const s = (i >> 3) * 12;
@@ -20,7 +48,15 @@ export const hashu32f = (i: number) => {
 
 export const randomFloat = (seed: number, min: number = 0, max: number = 1) => {
   return clamp(min + hashu32f(seed) * (max - min), min, max);
-}
+};
+
+export const randomInt = (
+  seed: number,
+  min: number = 0,
+  max: number = 0xffffffff,
+) => {
+  return clamp(Math.round(randomFloat(seed, min, max)), min, max);
+};
 
 export const hash21f = (
   ix: number,
@@ -78,34 +114,6 @@ export const hashAnyu32 = (v: any): number => {
   }
 
   return toUint32(n);
-};
-
-export const floatBitsToUint = (f: number): number => {
-  const buffer = new ArrayBuffer(4);
-  const view = new DataView(buffer);
-  view.setFloat32(0, f);
-  return view.getUint32(0);
-};
-
-export const floatBitsToUint64 = (f: number): bigint => {
-  const buffer = new ArrayBuffer(8);
-  const view = new DataView(buffer);
-  view.setFloat64(0, f);
-  return view.getBigUint64(0);
-};
-
-export const toUint64 = (f: (number | bigint)): bigint => {
-  const buffer = new ArrayBuffer(8);
-  const view = new DataView(buffer);
-  isFloat(f) ? view.setFloat64(0, f) : view.setBigUint64(0, BigInt(f));
-  return view.getBigUint64(0);
-};
-
-export const toUint32 = (f: (number | bigint)): number => {
-  const buffer = new ArrayBuffer(4);
-  const view = new DataView(buffer);
-  isFloat(f) ? view.setFloat32(0, f) : view.setUint32(0, Number(f));
-  return view.getUint32(0);
 };
 
 export const hexToUint32 = (hex: string): number => {

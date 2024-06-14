@@ -22,3 +22,4 @@ export type RandomFloatsOptions = {
     seed?: number;
 };
 export declare const randomFloats: (count: number, options?: RandomFloatsOptions) => number[];
+export declare function fibonacci(): Generator<number, number, number>;

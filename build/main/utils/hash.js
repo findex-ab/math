@@ -1,8 +1,36 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.toUint32 = exports.toUint64 = exports.floatBitsToUint64 = exports.floatBitsToUint = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.randomFloat = exports.hashu32f = exports.hashu32 = void 0;
+exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.randomInt = exports.randomFloat = exports.hashu32f = exports.hashu32 = exports.toUint32 = exports.toUint64 = exports.floatBitsToUint64 = exports.floatBitsToUint = void 0;
 const is_1 = require("./is");
 const etc_1 = require("./etc");
+const floatBitsToUint = (f) => {
+    const buffer = new ArrayBuffer(4);
+    const view = new DataView(buffer);
+    view.setFloat32(0, f);
+    return view.getUint32(0);
+};
+exports.floatBitsToUint = floatBitsToUint;
+const floatBitsToUint64 = (f) => {
+    const buffer = new ArrayBuffer(8);
+    const view = new DataView(buffer);
+    view.setFloat64(0, f);
+    return view.getBigUint64(0);
+};
+exports.floatBitsToUint64 = floatBitsToUint64;
+const toUint64 = (f) => {
+    const buffer = new ArrayBuffer(8);
+    const view = new DataView(buffer);
+    (0, is_1.isFloat)(f) ? view.setFloat64(0, f) : view.setBigUint64(0, BigInt(f));
+    return view.getBigUint64(0);
+};
+exports.toUint64 = toUint64;
+const toUint32 = (f) => {
+    const buffer = new ArrayBuffer(4);
+    const view = new DataView(buffer);
+    (0, is_1.isFloat)(f) ? view.setFloat32(0, f) : view.setUint32(0, Number(f));
+    return view.getUint32(0);
+};
+exports.toUint32 = toUint32;
 const hashu32 = (i) => {
     i = (0, exports.toUint32)(i);
     const s = (i >> 3) * 12;
@@ -24,6 +52,10 @@ const randomFloat = (seed, min = 0, max = 1) => {
     return (0, etc_1.clamp)(min + (0, exports.hashu32f)(seed) * (max - min), min, max);
 };
 exports.randomFloat = randomFloat;
+const randomInt = (seed, min = 0, max = 0xffffffff) => {
+    return (0, etc_1.clamp)(Math.round((0, exports.randomFloat)(seed, min, max)), min, max);
+};
+exports.randomInt = randomInt;
 const hash21f = (ix, iy, is = 1.98472) => {
     let x = (0, exports.toUint32)(ix);
     let y = (0, exports.toUint32)(iy);
@@ -73,34 +105,6 @@ const hashAnyu32 = (v) => {
     return (0, exports.toUint32)(n);
 };
 exports.hashAnyu32 = hashAnyu32;
-const floatBitsToUint = (f) => {
-    const buffer = new ArrayBuffer(4);
-    const view = new DataView(buffer);
-    view.setFloat32(0, f);
-    return view.getUint32(0);
-};
-exports.floatBitsToUint = floatBitsToUint;
-const floatBitsToUint64 = (f) => {
-    const buffer = new ArrayBuffer(8);
-    const view = new DataView(buffer);
-    view.setFloat64(0, f);
-    return view.getBigUint64(0);
-};
-exports.floatBitsToUint64 = floatBitsToUint64;
-const toUint64 = (f) => {
-    const buffer = new ArrayBuffer(8);
-    const view = new DataView(buffer);
-    (0, is_1.isFloat)(f) ? view.setFloat64(0, f) : view.setBigUint64(0, BigInt(f));
-    return view.getBigUint64(0);
-};
-exports.toUint64 = toUint64;
-const toUint32 = (f) => {
-    const buffer = new ArrayBuffer(4);
-    const view = new DataView(buffer);
-    (0, is_1.isFloat)(f) ? view.setFloat32(0, f) : view.setUint32(0, Number(f));
-    return view.getUint32(0);
-};
-exports.toUint32 = toUint32;
 const hexToUint32 = (hex) => {
     let stringValue = hex.replace('#', '').replace('0x', '');
     stringValue = stringValue.length < 8 ? `${stringValue}FF` : stringValue;

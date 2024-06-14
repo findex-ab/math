@@ -65,3 +65,10 @@ export const randomFloats = (count, options = {}) => {
         return f;
     });
 };
+export function* fibonacci() {
+    let a = 0, b = 1;
+    while (true) {
+        yield a;
+        [a, b] = [b, a + b];
+    }
+}
