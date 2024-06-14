@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.randomInt = exports.randomFloat = exports.hashu32f = exports.hashu32 = exports.toUint32 = exports.toUint64 = exports.floatBitsToUint64 = exports.floatBitsToUint = void 0;
+exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.randomInt = exports.randomFloat = exports.hashu32f_v1 = exports.hashu32_v1 = exports.hashu32f = exports.hashu32 = exports.toUint32 = exports.toUint64 = exports.floatBitsToUint64 = exports.floatBitsToUint = void 0;
 const is_1 = require("./is");
 const etc_1 = require("./etc");
 const floatBitsToUint = (f) => {
@@ -48,6 +48,27 @@ const hashu32f = (i) => {
     return (0, exports.hashu32)(i) / 0xffffffff;
 };
 exports.hashu32f = hashu32f;
+const hashu32_v1 = (i) => {
+    const U = exports.toUint32;
+    let x = U(i);
+    let y = U(U(~x) >> U(2));
+    x ^= y;
+    x ^= x << 17;
+    x ^= x >> 13;
+    x ^= x << 5;
+    x *= 0xC3E0ACF7;
+    y ^= x;
+    y ^= y << 17;
+    y ^= y >> 13;
+    y ^= y << 5;
+    y *= 0x1BBD52FA;
+    return U((x * 13 + 8 * y) * 7);
+};
+exports.hashu32_v1 = hashu32_v1;
+const hashu32f_v1 = (i) => {
+    return (0, exports.hashu32_v1)(i) / 0xffffffff;
+};
+exports.hashu32f_v1 = hashu32f_v1;
 const randomFloat = (seed, min = 0, max = 1) => {
     return (0, etc_1.clamp)(min + (0, exports.hashu32f)(seed) * (max - min), min, max);
 };

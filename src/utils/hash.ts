@@ -46,6 +46,27 @@ export const hashu32f = (i: number) => {
   return hashu32(i) / 0xffffffff;
 };
 
+export const hashu32_v1 = (i: number): number => {
+  const U = toUint32;
+  let x = U(i);
+  let y = U(U(~x) >> U(2));
+  x ^= y;
+  x ^= x << 17;
+  x ^= x >> 13;
+  x ^= x << 5;
+  x *= 0xC3E0ACF7;
+  y ^= x;
+  y ^= y << 17;
+  y ^= y >> 13;
+  y ^= y << 5;
+  y *= 0x1BBD52FA;
+  return U((x * 13 + 8 * y) * 7);
+}
+
+export const hashu32f_v1 = (i: number): number => {
+  return hashu32_v1(i) / 0xffffffff;
+}
+
 export const randomFloat = (seed: number, min: number = 0, max: number = 1) => {
   return clamp(min + hashu32f(seed) * (max - min), min, max);
 };
