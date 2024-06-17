@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.randomInt = exports.randomFloat = exports.hashu32f_v1 = exports.hashu32_v1 = exports.hashu32f = exports.hashu32 = exports.toUint32 = exports.toUint64 = exports.floatBitsToUint64 = exports.floatBitsToUint = void 0;
+exports.UIDGenerator = exports.generateUID = exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.randomInt = exports.randomFloat = exports.hashu32f_v1 = exports.hashu32_v1 = exports.hashu32f = exports.hashu32 = exports.toUint32 = exports.toUint64 = exports.floatBitsToUint64 = exports.floatBitsToUint = void 0;
 const is_1 = require("./is");
 const etc_1 = require("./etc");
+const array_1 = require("./array");
 const floatBitsToUint = (f) => {
     const buffer = new ArrayBuffer(4);
     const view = new DataView(buffer);
@@ -48,7 +49,7 @@ const hashu32f = (i) => {
     return (0, exports.hashu32)(i) / 0xffffffff;
 };
 exports.hashu32f = hashu32f;
-const hashu32_v1 = (i) => {
+const hashu32_v1 = (i, normalize = false) => {
     const U = exports.toUint32;
     let x = U(i);
     let y = U(U(~x) >> U(2));
@@ -62,7 +63,7 @@ const hashu32_v1 = (i) => {
     y ^= y >> 13;
     y ^= y << 5;
     y *= 3013;
-    return U((x * 13 + 5 * y) * 3);
+    return U((x * 13 + 5 * y) * 3) / (normalize ? 0xFFFFFFFF : 1);
 };
 exports.hashu32_v1 = hashu32_v1;
 const hashu32f_v1 = (i) => {
@@ -164,3 +165,36 @@ const noise2D = (x, y, seed = 1.284715, octaves = 1, freq = 1.0) => {
     return n / div;
 };
 exports.noise2D = noise2D;
+const chance = (seed) => (0, exports.hashu32_v1)(seed, true) > 0.5;
+const generateUID = (numChars, inputSeed) => {
+    const alpha = 'abcdefghijklmnopqrstuvwxyz';
+    const genChar = (seed) => {
+        seed = (0, exports.hashu32_v1)(seed);
+        const digit = chance(seed);
+        seed = (0, exports.hashu32_v1)(seed);
+        if (digit)
+            return [seed, (seed % 9).toString()];
+        seed = (0, exports.hashu32_v1)(seed);
+        const c = alpha[seed % alpha.length];
+        seed = (0, exports.hashu32_v1)(seed);
+        const upper = chance(seed);
+        return [seed, upper ? c.toUpperCase() : c];
+    };
+    const initialState = { seed: inputSeed, tokens: [] };
+    const gen = (0, array_1.range)(numChars).reduce((prev, cur) => {
+        const [seed, token] = genChar(prev.seed);
+        const nextSeed = (0, exports.hashu32_v1)(prev.seed + 5 * (0, exports.hashu32_v1)(prev.seed) + cur + seed);
+        return Object.assign(Object.assign({}, prev), { tokens: [...prev.tokens, token], seed: nextSeed });
+    }, initialState);
+    return [gen.seed, gen.tokens.join('')];
+};
+exports.generateUID = generateUID;
+const UIDGenerator = (config, inputSeed = 583281) => {
+    let token = (0, exports.generateUID)(config.uidLength, inputSeed);
+    const next = () => {
+        token = (0, exports.generateUID)(config.uidLength, token[0]);
+        return token[1];
+    };
+    return { next };
+};
+exports.UIDGenerator = UIDGenerator;

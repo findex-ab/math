@@ -18,4 +18,5 @@ __exportStar(require("./utils/array"), exports);
 __exportStar(require("./utils/etc"), exports);
 __exportStar(require("./utils/hash"), exports);
 __exportStar(require("./utils/is"), exports);
+__exportStar(require("./utils/string"), exports);
 __exportStar(require("./vector"), exports);

@@ -1,5 +1,6 @@
 import { isBoolean, isFloat, isHTMLElement } from './is';
 import { cantor, clamp, fract, lerp } from './etc';
+import { range } from './array';
 export const floatBitsToUint = (f) => {
     const buffer = new ArrayBuffer(4);
     const view = new DataView(buffer);
@@ -39,7 +40,7 @@ export const hashu32 = (i) => {
 export const hashu32f = (i) => {
     return hashu32(i) / 0xffffffff;
 };
-export const hashu32_v1 = (i) => {
+export const hashu32_v1 = (i, normalize = false) => {
     const U = toUint32;
     let x = U(i);
     let y = U(U(~x) >> U(2));
@@ -53,7 +54,7 @@ export const hashu32_v1 = (i) => {
     y ^= y >> 13;
     y ^= y << 5;
     y *= 3013;
-    return U((x * 13 + 5 * y) * 3);
+    return U((x * 13 + 5 * y) * 3) / (normalize ? 0xFFFFFFFF : 1);
 };
 export const hashu32f_v1 = (i) => {
     return hashu32_v1(i) / 0xffffffff;
@@ -144,4 +145,39 @@ export const noise2D = (x, y, seed = 1.284715, octaves = 1, freq = 1.0) => {
         q *= 2.0;
     }
     return n / div;
+};
+const chance = (seed) => hashu32_v1(seed, true) > 0.5;
+export const generateUID = (numChars, inputSeed) => {
+    const alpha = 'abcdefghijklmnopqrstuvwxyz';
+    const genChar = (seed) => {
+        seed = hashu32_v1(seed);
+        const digit = chance(seed);
+        seed = hashu32_v1(seed);
+        if (digit)
+            return [seed, (seed % 9).toString()];
+        seed = hashu32_v1(seed);
+        const c = alpha[seed % alpha.length];
+        seed = hashu32_v1(seed);
+        const upper = chance(seed);
+        return [seed, upper ? c.toUpperCase() : c];
+    };
+    const initialState = { seed: inputSeed, tokens: [] };
+    const gen = range(numChars).reduce((prev, cur) => {
+        const [seed, token] = genChar(prev.seed);
+        const nextSeed = hashu32_v1(prev.seed + 5 * hashu32_v1(prev.seed) + cur + seed);
+        return {
+            ...prev,
+            tokens: [...prev.tokens, token],
+            seed: nextSeed
+        };
+    }, initialState);
+    return [gen.seed, gen.tokens.join('')];
+};
+export const UIDGenerator = (config, inputSeed = 583281) => {
+    let token = generateUID(config.uidLength, inputSeed);
+    const next = () => {
+        token = generateUID(config.uidLength, token[0]);
+        return token[1];
+    };
+    return { next };
 };
