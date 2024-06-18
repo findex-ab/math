@@ -236,3 +236,22 @@ export const UIDGenerator =  (config: UIDGeneratorConfig, inputSeed: number = 58
 
   return { next };
 }
+
+export type HashGeneratorConfig = {
+  seed?: number;
+}
+
+export type HashGenerator = {
+  next: () => number;
+}
+
+export const hashGenerator = (cfg: HashGeneratorConfig = {}): HashGenerator => {
+  let seed: number = cfg.seed ?? 10137;
+
+  const next = (): number => {
+    seed = hashu32_v1(hashu32_v1(seed) + seed);
+    return seed;
+  }
+
+  return { next };
+}

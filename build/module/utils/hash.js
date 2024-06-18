@@ -181,3 +181,11 @@ export const UIDGenerator = (config, inputSeed = 583281) => {
     };
     return { next };
 };
+export const hashGenerator = (cfg = {}) => {
+    let seed = cfg.seed ?? 10137;
+    const next = () => {
+        seed = hashu32_v1(hashu32_v1(seed) + seed);
+        return seed;
+    };
+    return { next };
+};

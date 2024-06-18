@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UIDGenerator = exports.generateUID = exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.randomInt = exports.randomFloat = exports.hashu32f_v1 = exports.hashu32_v1 = exports.hashu32f = exports.hashu32 = exports.toUint32 = exports.toUint64 = exports.floatBitsToUint64 = exports.floatBitsToUint = void 0;
+exports.hashGenerator = exports.UIDGenerator = exports.generateUID = exports.noise2D = exports.nthByte = exports.hexToUint32 = exports.hashAnyu32 = exports.hashAny = exports.hash21f = exports.randomInt = exports.randomFloat = exports.hashu32f_v1 = exports.hashu32_v1 = exports.hashu32f = exports.hashu32 = exports.toUint32 = exports.toUint64 = exports.floatBitsToUint64 = exports.floatBitsToUint = void 0;
 const is_1 = require("./is");
 const etc_1 = require("./etc");
 const array_1 = require("./array");
@@ -198,3 +198,13 @@ const UIDGenerator = (config, inputSeed = 583281) => {
     return { next };
 };
 exports.UIDGenerator = UIDGenerator;
+const hashGenerator = (cfg = {}) => {
+    var _a;
+    let seed = (_a = cfg.seed) !== null && _a !== void 0 ? _a : 10137;
+    const next = () => {
+        seed = (0, exports.hashu32_v1)((0, exports.hashu32_v1)(seed) + seed);
+        return seed;
+    };
+    return { next };
+};
+exports.hashGenerator = hashGenerator;

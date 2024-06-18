@@ -22,3 +22,10 @@ export type TUIDGenerator = {
     next: () => string;
 };
 export declare const UIDGenerator: (config: UIDGeneratorConfig, inputSeed?: number) => TUIDGenerator;
+export type HashGeneratorConfig = {
+    seed?: number;
+};
+export type HashGenerator = {
+    next: () => number;
+};
+export declare const hashGenerator: (cfg?: HashGeneratorConfig) => HashGenerator;
