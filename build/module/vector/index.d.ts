@@ -22,8 +22,10 @@ export declare class Vector implements IVector {
     add(b: Vector): Vector;
     sub(b: Vector): Vector;
     mul(b: Vector): Vector;
+    rotate(radians: number, axis: Vector): Vector;
     run(f: (v: number) => number): Vector;
     luma(): number;
+    div(b: Vector): Vector;
     static fromHex(hex: string): Vector;
     toRGB(precision?: number): string;
     lerp(b: Vector, scale: number): Vector;
@@ -55,3 +57,4 @@ export declare const vector3_unit: (a: Vector) => Vector;
 export declare const vector3_mag: (a: Vector) => number;
 export declare const vector3_tangents_slow: (n: Vector) => VectorPair;
 export declare const vector3_tangents_fast: (n: Vector) => VectorPair;
+export declare const vectorsAverage: (points: Vector[]) => Vector;

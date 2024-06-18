@@ -11,6 +11,8 @@ export * from './intersection/EPA';
 export * from './intersection/gilbert';
 export * from './intersection/gilbertEPA';
 export * from './intersection/SAT';
+export * from './intersection/line';
+export * from './intersection/polygon';
 export * from './mesh';
 export * from './physics';
 export * from './vector';

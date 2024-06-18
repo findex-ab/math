@@ -1,7 +1,34 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAABBPoints3D = exports.getAABBPoints = exports.pointVSAABB = exports.AABBvsAABB = exports.getAABBSize = exports.getAABBCenter = void 0;
+exports.getAABBPoints3D = exports.getAABBPoints = exports.pointVSAABB = exports.AABBvsAABB = exports.getAABBSize = exports.getAABBCenter = exports.aabbTranslate = exports.aabbCorrect = exports.aabbFromSize = void 0;
 const vector_1 = require("../vector");
+const aabbFromSize = (size) => {
+    const min = (0, vector_1.VEC31)(0);
+    const max = size;
+    return { min, max };
+};
+exports.aabbFromSize = aabbFromSize;
+const aabbCorrect = (a) => {
+    const maxX = Math.max(a.min.x, a.max.x);
+    const maxY = Math.max(a.min.y, a.max.y);
+    const maxZ = Math.max(a.min.z, a.max.z);
+    const minX = Math.min(a.min.x, a.max.x);
+    const minY = Math.min(a.min.y, a.max.y);
+    const minZ = Math.min(a.min.z, a.max.z);
+    const min = (0, vector_1.VEC3)(minX, minY, minZ);
+    const max = (0, vector_1.VEC3)(maxX, maxY, maxZ);
+    return { min, max };
+};
+exports.aabbCorrect = aabbCorrect;
+const aabbTranslate = (a, v) => {
+    const min = a.min.add(v);
+    const max = a.max.add(v);
+    return (0, exports.aabbCorrect)({
+        min,
+        max
+    });
+};
+exports.aabbTranslate = aabbTranslate;
 const getAABBCenter = (a) => {
     return a.min.add(a.max).scale(0.5);
 };
@@ -32,8 +59,8 @@ const getAABBPoints = (a) => {
     return [
         (0, vector_1.VEC2)(a.min.x, a.min.y),
         (0, vector_1.VEC2)(a.max.x, a.min.y),
-        (0, vector_1.VEC2)(a.max.y, a.max.y),
-        (0, vector_1.VEC2)(a.min.y, a.max.y)
+        (0, vector_1.VEC2)(a.max.x, a.max.y),
+        (0, vector_1.VEC2)(a.min.x, a.max.y)
     ];
 };
 exports.getAABBPoints = getAABBPoints;

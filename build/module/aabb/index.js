@@ -1,4 +1,28 @@
 import { VEC2, VEC3, VEC31, vector3_add, vector3_sub } from "../vector";
+export const aabbFromSize = (size) => {
+    const min = VEC31(0);
+    const max = size;
+    return { min, max };
+};
+export const aabbCorrect = (a) => {
+    const maxX = Math.max(a.min.x, a.max.x);
+    const maxY = Math.max(a.min.y, a.max.y);
+    const maxZ = Math.max(a.min.z, a.max.z);
+    const minX = Math.min(a.min.x, a.max.x);
+    const minY = Math.min(a.min.y, a.max.y);
+    const minZ = Math.min(a.min.z, a.max.z);
+    const min = VEC3(minX, minY, minZ);
+    const max = VEC3(maxX, maxY, maxZ);
+    return { min, max };
+};
+export const aabbTranslate = (a, v) => {
+    const min = a.min.add(v);
+    const max = a.max.add(v);
+    return aabbCorrect({
+        min,
+        max
+    });
+};
 export const getAABBCenter = (a) => {
     return a.min.add(a.max).scale(0.5);
 };
@@ -25,8 +49,8 @@ export const getAABBPoints = (a) => {
     return [
         VEC2(a.min.x, a.min.y),
         VEC2(a.max.x, a.min.y),
-        VEC2(a.max.y, a.max.y),
-        VEC2(a.min.y, a.max.y)
+        VEC2(a.max.x, a.max.y),
+        VEC2(a.min.x, a.max.y)
     ];
 };
 export const getAABBPoints3D = (aabb) => {

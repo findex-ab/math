@@ -48,11 +48,24 @@ export class Vector {
     mul(b) {
         return new Vector(this.x * b.x, this.y * b.y, this.z * b.z, this.w * b.w);
     }
+    rotate(radians, axis) {
+        const c = Math.cos(radians);
+        const s = Math.sin(radians);
+        const k = axis.unit();
+        let v1 = this.scale(c);
+        let v2 = k.cross(this).scale(s);
+        v1 = v1.add(v2);
+        v2 = k.scale(k.dot(this) * (1.0 - c));
+        return v1.add(v2);
+    }
     run(f) {
         return new Vector(f(this.x), f(this.y), f(this.z), f(this.w));
     }
     luma() {
         return this.dot(VEC3(0.299, 0.587, 0.114));
+    }
+    div(b) {
+        return new Vector(this.x / b.x, this.y / b.y, this.z / b.z, this.w / b.w);
     }
     static fromHex(hex) {
         const val = hexToUint32(hex);
@@ -68,7 +81,9 @@ export class Vector {
         return new Vector(mix(this.x, b.x, scale), mix(this.y, b.y, scale), mix(this.z || 0, b.z || 0, scale), mix(this.w || 0, b.w || 0, scale));
     }
     distance(b) {
-        return Math.sqrt(Math.pow(this.x - b.x, 2.0) + Math.pow(this.y - b.y, 2.0) + Math.pow(this.z - b.z, 2.0));
+        return Math.sqrt(Math.pow(this.x - b.x, 2.0) +
+            Math.pow(this.y - b.y, 2.0) +
+            Math.pow(this.z - b.z, 2.0));
     }
     clone() {
         return new Vector(this.x, this.y, this.z, this.w);
@@ -100,11 +115,15 @@ export class Vector {
     }
     toArray(n) {
         switch (n) {
-            case 1: return [this.x];
-            case 2: return [this.x, this.y];
-            case 3: return [this.x, this.y, this.z];
+            case 1:
+                return [this.x];
+            case 2:
+                return [this.x, this.y];
+            case 3:
+                return [this.x, this.y, this.z];
             default:
-            case 4: return [this.x, this.y, this.z, this.w];
+            case 4:
+                return [this.x, this.y, this.z, this.w];
         }
     }
 }
@@ -148,4 +167,13 @@ export const vector3_tangents_fast = (n) => {
     const t1 = vector3_unit(n.x >= 0.57735 ? VEC3(n.y, -n.x, 0.0) : VEC3(0.0, n.z, -n.y));
     const t2 = vector3_cross(n, t1);
     return { a: t1, b: t2 };
+};
+export const vectorsAverage = (points) => {
+    let p = new Vector(0, 0, 0, 0);
+    if (points.length <= 0)
+        return p;
+    for (const point of points) {
+        p = p.add(point);
+    }
+    return p.scale(1.0 / points.length);
 };

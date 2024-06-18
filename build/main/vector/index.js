@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.vector3_tangents_fast = exports.vector3_tangents_slow = exports.vector3_mag = exports.vector3_unit = exports.vector3_scale = exports.vector3_add = exports.vector3_sub = exports.vector3_cross = exports.vector3_dot = exports.samedir = exports.VEC31 = exports.VEC2 = exports.VEC3 = exports.VEC4 = exports.Vector = void 0;
+exports.vectorsAverage = exports.vector3_tangents_fast = exports.vector3_tangents_slow = exports.vector3_mag = exports.vector3_unit = exports.vector3_scale = exports.vector3_add = exports.vector3_sub = exports.vector3_cross = exports.vector3_dot = exports.samedir = exports.VEC31 = exports.VEC2 = exports.VEC3 = exports.VEC4 = exports.Vector = void 0;
 const etc_1 = require("../utils/etc");
 const array_1 = require("../utils/array");
 const hash_1 = require("../utils/hash");
@@ -55,11 +55,24 @@ class Vector {
     mul(b) {
         return new Vector(this.x * b.x, this.y * b.y, this.z * b.z, this.w * b.w);
     }
+    rotate(radians, axis) {
+        const c = Math.cos(radians);
+        const s = Math.sin(radians);
+        const k = axis.unit();
+        let v1 = this.scale(c);
+        let v2 = k.cross(this).scale(s);
+        v1 = v1.add(v2);
+        v2 = k.scale(k.dot(this) * (1.0 - c));
+        return v1.add(v2);
+    }
     run(f) {
         return new Vector(f(this.x), f(this.y), f(this.z), f(this.w));
     }
     luma() {
         return this.dot((0, exports.VEC3)(0.299, 0.587, 0.114));
+    }
+    div(b) {
+        return new Vector(this.x / b.x, this.y / b.y, this.z / b.z, this.w / b.w);
     }
     static fromHex(hex) {
         const val = (0, hash_1.hexToUint32)(hex);
@@ -75,7 +88,9 @@ class Vector {
         return new Vector((0, etc_1.lerp)(this.x, b.x, scale), (0, etc_1.lerp)(this.y, b.y, scale), (0, etc_1.lerp)(this.z || 0, b.z || 0, scale), (0, etc_1.lerp)(this.w || 0, b.w || 0, scale));
     }
     distance(b) {
-        return Math.sqrt(Math.pow(this.x - b.x, 2.0) + Math.pow(this.y - b.y, 2.0) + Math.pow(this.z - b.z, 2.0));
+        return Math.sqrt(Math.pow(this.x - b.x, 2.0) +
+            Math.pow(this.y - b.y, 2.0) +
+            Math.pow(this.z - b.z, 2.0));
     }
     clone() {
         return new Vector(this.x, this.y, this.z, this.w);
@@ -107,11 +122,15 @@ class Vector {
     }
     toArray(n) {
         switch (n) {
-            case 1: return [this.x];
-            case 2: return [this.x, this.y];
-            case 3: return [this.x, this.y, this.z];
+            case 1:
+                return [this.x];
+            case 2:
+                return [this.x, this.y];
+            case 3:
+                return [this.x, this.y, this.z];
             default:
-            case 4: return [this.x, this.y, this.z, this.w];
+            case 4:
+                return [this.x, this.y, this.z, this.w];
         }
     }
 }
@@ -171,3 +190,13 @@ const vector3_tangents_fast = (n) => {
     return { a: t1, b: t2 };
 };
 exports.vector3_tangents_fast = vector3_tangents_fast;
+const vectorsAverage = (points) => {
+    let p = new Vector(0, 0, 0, 0);
+    if (points.length <= 0)
+        return p;
+    for (const point of points) {
+        p = p.add(point);
+    }
+    return p.scale(1.0 / points.length);
+};
+exports.vectorsAverage = vectorsAverage;

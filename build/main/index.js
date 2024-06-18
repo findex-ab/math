@@ -27,6 +27,8 @@ __exportStar(require("./intersection/EPA"), exports);
 __exportStar(require("./intersection/gilbert"), exports);
 __exportStar(require("./intersection/gilbertEPA"), exports);
 __exportStar(require("./intersection/SAT"), exports);
+__exportStar(require("./intersection/line"), exports);
+__exportStar(require("./intersection/polygon"), exports);
 __exportStar(require("./mesh"), exports);
 __exportStar(require("./physics"), exports);
 __exportStar(require("./vector"), exports);
