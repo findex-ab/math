@@ -5,17 +5,17 @@ import { hexToUint32, nthByte } from '../utils/hash'
 export interface IVector {
   x: number
   y: number
-  z?: number
-  w?: number
+  z: number
+  w: number
 }
 
 export class Vector implements IVector {
   _x: number = 0
   _y: number = 0
-  _z?: number = 0
-  _w?: number = 0
+  _z: number = 0
+  _w: number = 0
 
-  constructor(x: number = 0, y: number = 0, z?: number, w?: number) {
+  constructor(x: number = 0, y: number = 0, z: number = 0, w: number = 0) {
     this._x = x ?? 0
     this._y = y ?? 0
     this._z = z ?? 0

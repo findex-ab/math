@@ -6,7 +6,7 @@ export class Vector {
     _y = 0;
     _z = 0;
     _w = 0;
-    constructor(x = 0, y = 0, z, w) {
+    constructor(x = 0, y = 0, z = 0, w = 0) {
         this._x = x ?? 0;
         this._y = y ?? 0;
         this._z = z ?? 0;

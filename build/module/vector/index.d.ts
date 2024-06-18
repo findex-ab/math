@@ -1,14 +1,14 @@
 export interface IVector {
     x: number;
     y: number;
-    z?: number;
-    w?: number;
+    z: number;
+    w: number;
 }
 export declare class Vector implements IVector {
     _x: number;
     _y: number;
-    _z?: number;
-    _w?: number;
+    _z: number;
+    _w: number;
     constructor(x?: number, y?: number, z?: number, w?: number);
     get x(): number;
     get y(): number;

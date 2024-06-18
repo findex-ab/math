@@ -5,7 +5,7 @@ const etc_1 = require("../utils/etc");
 const array_1 = require("../utils/array");
 const hash_1 = require("../utils/hash");
 class Vector {
-    constructor(x = 0, y = 0, z, w) {
+    constructor(x = 0, y = 0, z = 0, w = 0) {
         this._x = 0;
         this._y = 0;
         this._z = 0;
