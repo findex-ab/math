@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
+exports.unique = exports.uniqueBy = exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
 const range = (n) => Array.from(Array(n).keys());
 exports.range = range;
 const shiftRight = (arr, index, insert, replace = false) => {
@@ -33,3 +33,26 @@ const shiftLeft = (arr, index) => {
     return copy.slice(0, copy.length - 1);
 };
 exports.shiftLeft = shiftLeft;
+const uniqueBy = (arr, key) => {
+    const nextArr = [];
+    try {
+        const getId = (item, k) => {
+            return typeof k === 'string' ? item[k] : k(item);
+        };
+        for (const item of arr) {
+            const id = getId(item, key);
+            const count = nextArr.filter((it) => getId(it, key) === id).length;
+            if (count > 0)
+                continue;
+            nextArr.push(item);
+        }
+    }
+    catch (e) {
+        console.error('uniqueBy() failed.');
+        console.error(e);
+    }
+    return nextArr;
+};
+exports.uniqueBy = uniqueBy;
+const unique = (arr) => [...Array.from(new Set(arr))];
+exports.unique = unique;

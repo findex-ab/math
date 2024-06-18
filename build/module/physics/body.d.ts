@@ -1,0 +1,20 @@
+import { AABB } from "../aabb";
+import { Mat4 } from "../matrix";
+import { Mesh } from "../mesh";
+import { Vector } from "../vector";
+export type PhysicsBody = {
+    position: Vector;
+    rotation: Vector;
+    linearVelocity: Vector;
+    angularVelocity: Vector;
+    canMove: boolean;
+    canRotate: boolean;
+    mesh: Mesh;
+    bounds: AABB;
+};
+export declare const physicsBodyGetIntegratedRotation: (body: PhysicsBody, dt: number) => Vector;
+export declare const physicsBodyGetTranslationMatrix: (body: PhysicsBody) => Mat4;
+export declare const physicsBodyGetRotationMatrix: (body: PhysicsBody) => Mat4;
+export declare const physicsBodyGetMatrix: (body: PhysicsBody) => Mat4;
+export declare const physicsBodyPointLocalToGlobal: (body: PhysicsBody, point: Vector) => Vector;
+export declare const physicsBodyPointGlobalToLocal: (body: PhysicsBody, point: Vector) => Vector;
