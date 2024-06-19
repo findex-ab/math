@@ -23,6 +23,7 @@ const polygonIntersectionPoints = (
   const edges2 = findEdges(verticesB);
 
   const fun = is3D ? findLineIntersection3D : findLineIntersection2D;
+  const isUnique = (p: Vector): boolean => points.length <= 0 ? true : Math.min(...points.map(pp => pp.point.distance(p))) > 0.1
 
   for (const e1 of edges1) {
     for (const e2 of edges2) {
@@ -35,7 +36,7 @@ const polygonIntersectionPoints = (
         { a: a, b: b },
         { a: c, b: d },
       );
-      if (point) {
+      if (point && isUnique(point.point)) {
         const ba = b.sub(a);
         const dc = c.sub(d);
         //const dcba = dc.sub(ba).scale(0.5);
