@@ -23,7 +23,8 @@ export declare class Vector implements IVector {
     sub(b: Vector): Vector;
     mul(b: Vector): Vector;
     rotate(radians: number, axis: Vector): Vector;
-    run(f: (v: number) => number): Vector;
+    run(f: (v: number, i: number) => number): Vector;
+    clamp(min: Vector, max: Vector): Vector;
     luma(): number;
     div(b: Vector): Vector;
     static fromHex(hex: string): Vector;

@@ -66,7 +66,10 @@ class Vector {
         return v1.add(v2);
     }
     run(f) {
-        return new Vector(f(this.x), f(this.y), f(this.z), f(this.w));
+        return new Vector(f(this.x, 0), f(this.y, 1), f(this.z, 2), f(this.w, 3));
+    }
+    clamp(min, max) {
+        return new Vector((0, etc_1.clamp)(this.x, min.x, max.x), (0, etc_1.clamp)(this.y, min.y, max.y), (0, etc_1.clamp)(this.z, min.z, max.z), (0, etc_1.clamp)(this.w, min.w, max.w));
     }
     luma() {
         return this.dot((0, exports.VEC3)(0.299, 0.587, 0.114));

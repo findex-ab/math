@@ -1,4 +1,4 @@
-import { lerp as mix } from '../utils/etc';
+import { clamp, lerp as mix } from '../utils/etc';
 import { range } from '../utils/array';
 import { hexToUint32, nthByte } from '../utils/hash';
 export class Vector {
@@ -59,7 +59,10 @@ export class Vector {
         return v1.add(v2);
     }
     run(f) {
-        return new Vector(f(this.x), f(this.y), f(this.z), f(this.w));
+        return new Vector(f(this.x, 0), f(this.y, 1), f(this.z, 2), f(this.w, 3));
+    }
+    clamp(min, max) {
+        return new Vector(clamp(this.x, min.x, max.x), clamp(this.y, min.y, max.y), clamp(this.z, min.z, max.z), clamp(this.w, min.w, max.w));
     }
     luma() {
         return this.dot(VEC3(0.299, 0.587, 0.114));
