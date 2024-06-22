@@ -104,8 +104,31 @@ export class Vector implements IVector {
     return new Vector(...numbers);
   }
 
+  static fromArray(arr: number[]) {
+    return new Vector(arr[0], arr[1], arr[2], arr[3]);
+  }
+
+  static fromRGB(val: string) {
+    val = val.replace('rgba', '');
+    val = val.replace('rgb', '');
+    val = val.replace('(', '');
+    val = val.replace(')', '');
+    const values = val.split(',').map(it => it.trim()).map(it => Number(it));
+    return Vector.fromArray(values);
+  }
+
+  static fromColor(val: string) {
+    if (val.includes('#')) return Vector.fromHex(val);
+    if (val.includes('rgb')) return Vector.fromRGB(val);
+    return new Vector(0, 0, 0, 0);
+  }
+
   toRGB(precision: number = 3) {
     return `rgb(${this.x.toFixed(precision)}, ${this.y.toFixed(precision)}, ${this.z.toFixed(precision)})`;
+  }
+
+  toRGBA(precision: number = 3, alpha: number = 0) {
+    return `rgba(${this.x.toFixed(precision)}, ${this.y.toFixed(precision)}, ${this.z.toFixed(precision)}, ${(alpha || this.w).toFixed(precision)})`;
   }
 
   lerp(b: Vector, scale: number) {
@@ -161,11 +184,25 @@ export class Vector implements IVector {
     return `${this.x} ${this.y} ${this.z} ${this.w}`;
   }
 
-  toString(): string {
+  toString(count: number = 0, separator: string = ' '): string {
+    if (count > 0) {
+      return range(count).map(i => this.at(i)).join(separator)
+    }
     return this.str();
   }
 
-  toArray<T extends number[] = number[]>(n: number): T {
+  at(index: number): number {
+    switch (index) {
+        case 0: return this.x;
+        case 1: return this.y;
+        case 2: return this.z;
+        case 3: return this.w;
+    }
+    return 0;
+  }
+
+
+  toArray<T extends number[] = number[]>(n: number = 4): T {
     switch (n) {
       case 1:
         return [this.x] as T;
@@ -178,6 +215,12 @@ export class Vector implements IVector {
         return [this.x, this.y, this.z, this.w] as T;
     }
   }
+}
+
+export const isVector = (x: any): x is InstanceType<typeof Vector> => {
+  if (!x) return false;
+  if (typeof x !== 'object') return false;
+  return (typeof x.x === 'number' && typeof x.y === 'number' && typeof x.z === 'number' && typeof x.w === 'number');
 }
 
 export const VEC4 = (x: number, y: number, z: number, w: number) =>

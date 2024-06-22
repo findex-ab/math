@@ -107,3 +107,8 @@ export function* fibonacci(): Generator<number, number, number> {
       [a, b] = [b, a + b];
     }
 }
+
+export const remap = (v: number, vFrom: { min: number, max: number }, vTo: { min: number, max: number }) => {
+  if (vFrom.min === vTo.min && vFrom.max === vTo.max) return clamp(v, vFrom.min, vFrom.max);
+  return clamp(vTo.min + (((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min)), vTo.min, vTo.max);
+}

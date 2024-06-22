@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unique = exports.uniqueBy = exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
-const range = (n) => Array.from(Array(n).keys());
+exports.join = exports.chunkify = exports.unique = exports.uniqueBy = exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
+const range = (n) => (n <= 0 ? [] : Array.from(Array(n).keys()));
 exports.range = range;
 const shiftRight = (arr, index, insert, replace = false) => {
     const copy = [...arr];
@@ -56,3 +56,36 @@ const uniqueBy = (arr, key) => {
 exports.uniqueBy = uniqueBy;
 const unique = (arr) => [...Array.from(new Set(arr))];
 exports.unique = unique;
+const chunkify = (arr, chunkSize = 2) => {
+    const result = [];
+    for (let i = 0; i < arr.length; i += chunkSize) {
+        const part = arr.slice(i, i + chunkSize);
+        result.push(part);
+    }
+    return result;
+};
+exports.chunkify = chunkify;
+const join = (array, options) => {
+    if (array.length === 0)
+        return [];
+    if (!options.prefix && !options.suffix)
+        return array;
+    const result = [];
+    for (let i = 0; i < array.length; i++) {
+        if (options.prefix) {
+            const item = options.prefix(i);
+            if (item !== null) {
+                result.push(item);
+            }
+        }
+        result.push(array[i]);
+        if (options.suffix && i < array.length - 1) {
+            const item = options.suffix(i);
+            if (item !== null) {
+                result.push(item);
+            }
+        }
+    }
+    return result;
+};
+exports.join = join;

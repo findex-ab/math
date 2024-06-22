@@ -1,4 +1,4 @@
-export const range = (n) => Array.from(Array(n).keys());
+export const range = (n) => (n <= 0 ? [] : Array.from(Array(n).keys()));
 export const shiftRight = (arr, index, insert, replace = false) => {
     const copy = [...arr];
     if (!replace) {
@@ -47,3 +47,34 @@ export const uniqueBy = (arr, key) => {
     return nextArr;
 };
 export const unique = (arr) => [...Array.from(new Set(arr))];
+export const chunkify = (arr, chunkSize = 2) => {
+    const result = [];
+    for (let i = 0; i < arr.length; i += chunkSize) {
+        const part = arr.slice(i, i + chunkSize);
+        result.push(part);
+    }
+    return result;
+};
+export const join = (array, options) => {
+    if (array.length === 0)
+        return [];
+    if (!options.prefix && !options.suffix)
+        return array;
+    const result = [];
+    for (let i = 0; i < array.length; i++) {
+        if (options.prefix) {
+            const item = options.prefix(i);
+            if (item !== null) {
+                result.push(item);
+            }
+        }
+        result.push(array[i]);
+        if (options.suffix && i < array.length - 1) {
+            const item = options.suffix(i);
+            if (item !== null) {
+                result.push(item);
+            }
+        }
+    }
+    return result;
+};

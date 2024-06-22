@@ -27,7 +27,11 @@ export declare class Vector implements IVector {
     luma(): number;
     div(b: Vector): Vector;
     static fromHex(hex: string): Vector;
+    static fromArray(arr: number[]): Vector;
+    static fromRGB(val: string): Vector;
+    static fromColor(val: string): Vector;
     toRGB(precision?: number): string;
+    toRGBA(precision?: number, alpha?: number): string;
     lerp(b: Vector, scale: number): Vector;
     distance(b: Vector): number;
     clone(): Vector;
@@ -36,9 +40,11 @@ export declare class Vector implements IVector {
     dot(b: Vector): number;
     cross(b: Vector): Vector;
     str(): string;
-    toString(): string;
-    toArray<T extends number[] = number[]>(n: number): T;
+    toString(count?: number, separator?: string): string;
+    at(index: number): number;
+    toArray<T extends number[] = number[]>(n?: number): T;
 }
+export declare const isVector: (x: any) => x is Vector;
 export declare const VEC4: (x: number, y: number, z: number, w: number) => Vector;
 export declare const VEC3: (x: number, y: number, z: number) => Vector;
 export declare const VEC2: (x: number, y: number) => Vector;

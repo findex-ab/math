@@ -74,8 +74,29 @@ export class Vector {
             .reverse();
         return new Vector(...numbers);
     }
+    static fromArray(arr) {
+        return new Vector(arr[0], arr[1], arr[2], arr[3]);
+    }
+    static fromRGB(val) {
+        val = val.replace('rgba', '');
+        val = val.replace('rgb', '');
+        val = val.replace('(', '');
+        val = val.replace(')', '');
+        const values = val.split(',').map(it => it.trim()).map(it => Number(it));
+        return Vector.fromArray(values);
+    }
+    static fromColor(val) {
+        if (val.includes('#'))
+            return Vector.fromHex(val);
+        if (val.includes('rgb'))
+            return Vector.fromRGB(val);
+        return new Vector(0, 0, 0, 0);
+    }
     toRGB(precision = 3) {
         return `rgb(${this.x.toFixed(precision)}, ${this.y.toFixed(precision)}, ${this.z.toFixed(precision)})`;
+    }
+    toRGBA(precision = 3, alpha = 0) {
+        return `rgba(${this.x.toFixed(precision)}, ${this.y.toFixed(precision)}, ${this.z.toFixed(precision)}, ${(alpha || this.w).toFixed(precision)})`;
     }
     lerp(b, scale) {
         return new Vector(mix(this.x, b.x, scale), mix(this.y, b.y, scale), mix(this.z || 0, b.z || 0, scale), mix(this.w || 0, b.w || 0, scale));
@@ -110,10 +131,22 @@ export class Vector {
     str() {
         return `${this.x} ${this.y} ${this.z} ${this.w}`;
     }
-    toString() {
+    toString(count = 0, separator = ' ') {
+        if (count > 0) {
+            return range(count).map(i => this.at(i)).join(separator);
+        }
         return this.str();
     }
-    toArray(n) {
+    at(index) {
+        switch (index) {
+            case 0: return this.x;
+            case 1: return this.y;
+            case 2: return this.z;
+            case 3: return this.w;
+        }
+        return 0;
+    }
+    toArray(n = 4) {
         switch (n) {
             case 1:
                 return [this.x];
@@ -127,6 +160,13 @@ export class Vector {
         }
     }
 }
+export const isVector = (x) => {
+    if (!x)
+        return false;
+    if (typeof x !== 'object')
+        return false;
+    return (typeof x.x === 'number' && typeof x.y === 'number' && typeof x.z === 'number' && typeof x.w === 'number');
+};
 export const VEC4 = (x, y, z, w) => new Vector(x, y, z, w);
 export const VEC3 = (x, y, z) => new Vector(x, y, z);
 export const VEC2 = (x, y) => new Vector(x, y);

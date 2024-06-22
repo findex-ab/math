@@ -23,3 +23,10 @@ export type RandomFloatsOptions = {
 };
 export declare const randomFloats: (count: number, options?: RandomFloatsOptions) => number[];
 export declare function fibonacci(): Generator<number, number, number>;
+export declare const remap: (v: number, vFrom: {
+    min: number;
+    max: number;
+}, vTo: {
+    min: number;
+    max: number;
+}) => number;

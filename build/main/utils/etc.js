@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fibonacci = exports.randomFloats = exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.average = exports.sum = void 0;
+exports.remap = exports.fibonacci = exports.randomFloats = exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.average = exports.sum = void 0;
 const array_1 = require("./array");
 const hash_1 = require("./hash");
 const sum = (arr) => arr.reduce((a, b) => a + b, 0);
@@ -94,3 +94,9 @@ function* fibonacci() {
     }
 }
 exports.fibonacci = fibonacci;
+const remap = (v, vFrom, vTo) => {
+    if (vFrom.min === vTo.min && vFrom.max === vTo.max)
+        return (0, exports.clamp)(v, vFrom.min, vFrom.max);
+    return (0, exports.clamp)(vTo.min + (((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min)), vTo.min, vTo.max);
+};
+exports.remap = remap;

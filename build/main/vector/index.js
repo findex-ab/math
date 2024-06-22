@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.vectorsAverage = exports.vector3_tangents_fast = exports.vector3_tangents_slow = exports.vector3_mag = exports.vector3_unit = exports.vector3_scale = exports.vector3_add = exports.vector3_sub = exports.vector3_cross = exports.vector3_dot = exports.samedir = exports.VEC31 = exports.VEC2 = exports.VEC3 = exports.VEC4 = exports.Vector = void 0;
+exports.vectorsAverage = exports.vector3_tangents_fast = exports.vector3_tangents_slow = exports.vector3_mag = exports.vector3_unit = exports.vector3_scale = exports.vector3_add = exports.vector3_sub = exports.vector3_cross = exports.vector3_dot = exports.samedir = exports.VEC31 = exports.VEC2 = exports.VEC3 = exports.VEC4 = exports.isVector = exports.Vector = void 0;
 const etc_1 = require("../utils/etc");
 const array_1 = require("../utils/array");
 const hash_1 = require("../utils/hash");
@@ -81,8 +81,29 @@ class Vector {
             .reverse();
         return new Vector(...numbers);
     }
+    static fromArray(arr) {
+        return new Vector(arr[0], arr[1], arr[2], arr[3]);
+    }
+    static fromRGB(val) {
+        val = val.replace('rgba', '');
+        val = val.replace('rgb', '');
+        val = val.replace('(', '');
+        val = val.replace(')', '');
+        const values = val.split(',').map(it => it.trim()).map(it => Number(it));
+        return Vector.fromArray(values);
+    }
+    static fromColor(val) {
+        if (val.includes('#'))
+            return Vector.fromHex(val);
+        if (val.includes('rgb'))
+            return Vector.fromRGB(val);
+        return new Vector(0, 0, 0, 0);
+    }
     toRGB(precision = 3) {
         return `rgb(${this.x.toFixed(precision)}, ${this.y.toFixed(precision)}, ${this.z.toFixed(precision)})`;
+    }
+    toRGBA(precision = 3, alpha = 0) {
+        return `rgba(${this.x.toFixed(precision)}, ${this.y.toFixed(precision)}, ${this.z.toFixed(precision)}, ${(alpha || this.w).toFixed(precision)})`;
     }
     lerp(b, scale) {
         return new Vector((0, etc_1.lerp)(this.x, b.x, scale), (0, etc_1.lerp)(this.y, b.y, scale), (0, etc_1.lerp)(this.z || 0, b.z || 0, scale), (0, etc_1.lerp)(this.w || 0, b.w || 0, scale));
@@ -117,10 +138,22 @@ class Vector {
     str() {
         return `${this.x} ${this.y} ${this.z} ${this.w}`;
     }
-    toString() {
+    toString(count = 0, separator = ' ') {
+        if (count > 0) {
+            return (0, array_1.range)(count).map(i => this.at(i)).join(separator);
+        }
         return this.str();
     }
-    toArray(n) {
+    at(index) {
+        switch (index) {
+            case 0: return this.x;
+            case 1: return this.y;
+            case 2: return this.z;
+            case 3: return this.w;
+        }
+        return 0;
+    }
+    toArray(n = 4) {
         switch (n) {
             case 1:
                 return [this.x];
@@ -135,6 +168,14 @@ class Vector {
     }
 }
 exports.Vector = Vector;
+const isVector = (x) => {
+    if (!x)
+        return false;
+    if (typeof x !== 'object')
+        return false;
+    return (typeof x.x === 'number' && typeof x.y === 'number' && typeof x.z === 'number' && typeof x.w === 'number');
+};
+exports.isVector = isVector;
 const VEC4 = (x, y, z, w) => new Vector(x, y, z, w);
 exports.VEC4 = VEC4;
 const VEC3 = (x, y, z) => new Vector(x, y, z);

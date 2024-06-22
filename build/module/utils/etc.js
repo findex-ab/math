@@ -72,3 +72,8 @@ export function* fibonacci() {
         [a, b] = [b, a + b];
     }
 }
+export const remap = (v, vFrom, vTo) => {
+    if (vFrom.min === vTo.min && vFrom.max === vTo.max)
+        return clamp(v, vFrom.min, vFrom.max);
+    return clamp(vTo.min + (((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min)), vTo.min, vTo.max);
+};
