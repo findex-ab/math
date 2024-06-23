@@ -1,7 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAABBPoints3D = exports.getAABBPoints = exports.pointVSAABB = exports.AABBvsAABB = exports.getAABBSize = exports.getAABBCenter = exports.aabbTranslate = exports.aabbCorrect = exports.aabbFromSize = void 0;
+exports.getAABBPoints3D = exports.getAABBPoints = exports.pointVSAABB = exports.AABBvsAABB = exports.getAABBSize = exports.getAABBCenter = exports.aabbTranslate = exports.aabbCorrect = exports.aabbFromSize = exports.aabbSub = void 0;
 const vector_1 = require("../vector");
+const aabbSub = (a, b) => {
+    return {
+        min: a.min.sub(b.min),
+        max: a.max.sub(b.max)
+    };
+};
+exports.aabbSub = aabbSub;
 const aabbFromSize = (size) => {
     const min = (0, vector_1.VEC31)(0);
     const max = size;

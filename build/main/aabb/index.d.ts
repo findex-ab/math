@@ -3,6 +3,10 @@ export type AABB = {
     min: Vector;
     max: Vector;
 };
+export declare const aabbSub: (a: AABB, b: AABB) => {
+    min: Vector;
+    max: Vector;
+};
 export declare const aabbFromSize: (size: Vector) => AABB;
 export declare const aabbCorrect: (a: AABB) => {
     min: Vector;

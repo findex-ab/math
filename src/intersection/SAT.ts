@@ -6,9 +6,8 @@ export type SATResult = {
   normal: Vector;
 }
 
-export const SAT = (pointsA: Vector[], pointsB: Vector[]): SATResult | null => {
+export const SAT = (pointsA: Vector[], pointsB: Vector[], axises: Vector[] = [VEC2(1, 0), VEC2(0, 1)]): SATResult | null => {
   const LARGE = INF * 0.5;
-  const axises: Vector[] = [VEC2(1, 0), VEC2(0, 1)]
 
   const project = (axis: Vector, points: Vector[]) => {
     let min = INF

@@ -1,4 +1,10 @@
 import { VEC2, VEC3, VEC31, vector3_add, vector3_sub } from "../vector";
+export const aabbSub = (a, b) => {
+    return {
+        min: a.min.sub(b.min),
+        max: a.max.sub(b.max)
+    };
+};
 export const aabbFromSize = (size) => {
     const min = VEC31(0);
     const max = size;

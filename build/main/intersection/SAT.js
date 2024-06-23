@@ -3,9 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SAT = void 0;
 const constants_1 = require("../constants");
 const vector_1 = require("../vector");
-const SAT = (pointsA, pointsB) => {
+const SAT = (pointsA, pointsB, axises = [(0, vector_1.VEC2)(1, 0), (0, vector_1.VEC2)(0, 1)]) => {
     const LARGE = constants_1.INF * 0.5;
-    const axises = [(0, vector_1.VEC2)(1, 0), (0, vector_1.VEC2)(0, 1)];
     const project = (axis, points) => {
         let min = constants_1.INF;
         let max = -constants_1.INF;

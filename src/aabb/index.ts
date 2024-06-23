@@ -5,6 +5,13 @@ export type AABB = {
   max: Vector
 }
 
+export const aabbSub = (a: AABB, b: AABB) => {
+  return {
+    min: a.min.sub(b.min),
+    max: a.max.sub(b.max)
+  }
+}
+
 export const aabbFromSize = (size: Vector): AABB => {
   const min = VEC31(0);
   const max = size;

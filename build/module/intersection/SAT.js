@@ -1,8 +1,7 @@
 import { INF } from "../constants";
 import { VEC2 } from "../vector";
-export const SAT = (pointsA, pointsB) => {
+export const SAT = (pointsA, pointsB, axises = [VEC2(1, 0), VEC2(0, 1)]) => {
     const LARGE = INF * 0.5;
-    const axises = [VEC2(1, 0), VEC2(0, 1)];
     const project = (axis, points) => {
         let min = INF;
         let max = -INF;
