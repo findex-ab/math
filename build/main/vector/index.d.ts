@@ -22,6 +22,8 @@ export declare class Vector implements IVector {
     add(b: Vector): Vector;
     sub(b: Vector): Vector;
     mul(b: Vector): Vector;
+    static sum(vectors: Vector[]): Vector;
+    static avg(vectors: Vector[]): Vector;
     rotate(radians: number, axis: Vector): Vector;
     run(f: (v: number, i: number) => number): Vector;
     clamp(min: Vector, max: Vector): Vector;

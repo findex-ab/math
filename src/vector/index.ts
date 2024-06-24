@@ -70,6 +70,16 @@ export class Vector implements IVector {
     return new Vector(this.x * b.x, this.y * b.y, this.z * b.z, this.w * b.w);
   }
 
+  static sum(vectors: Vector[]) {
+    let v = new Vector(0, 0, 0, 0);
+    vectors.forEach((b) => v = v.add(b));
+    return v;
+  }
+
+  static avg(vectors: Vector[]) {
+    return Vector.sum(vectors).scale(1.0 / Math.max(1, vectors.length));
+  }
+
   rotate(radians: number, axis: Vector) {
     const c = Math.cos(radians);
     const s = Math.sin(radians);

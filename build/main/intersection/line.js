@@ -22,7 +22,7 @@ const lineIntersection = (lineA, lineB, is3D) => {
         const p = a.add(r.scale(t));
         return {
             point: p,
-            depth: t,
+            depth: 0,
             normal: (0, vector_1.VEC3)(u, t, 0)
         };
     }

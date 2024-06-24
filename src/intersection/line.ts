@@ -27,7 +27,7 @@ const lineIntersection = (lineA: Line, lineB: Line, is3D: boolean): SimpleContac
 
     return {
       point: p,
-      depth: t,
+      depth: 0,
       normal: VEC3(u, t, 0)
     }
   }

@@ -48,6 +48,14 @@ export class Vector {
     mul(b) {
         return new Vector(this.x * b.x, this.y * b.y, this.z * b.z, this.w * b.w);
     }
+    static sum(vectors) {
+        let v = new Vector(0, 0, 0, 0);
+        vectors.forEach((b) => v = v.add(b));
+        return v;
+    }
+    static avg(vectors) {
+        return Vector.sum(vectors).scale(1.0 / Math.max(1, vectors.length));
+    }
     rotate(radians, axis) {
         const c = Math.cos(radians);
         const s = Math.sin(radians);
