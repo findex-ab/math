@@ -111,3 +111,23 @@ export const join = <T>(
 
   return result;
 };
+
+export const arrayCount = <T = any>(arr: T[], item: T): number => {
+  return arr.filter((it) => it === item).length;
+}
+
+export const mostFrequent = <T = any>(arr: T[]): T => {
+  let most = arr[0];
+  let f: number = -1;
+
+  for (let i = 0; i < arr.length; i++) {
+    const it = arr[i];
+    const freq = arrayCount(arr, it);
+    if (freq > f) {
+      f = freq;
+      most = it;
+    }
+  }
+
+  return most;
+}

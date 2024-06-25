@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.join = exports.chunkify = exports.unique = exports.uniqueBy = exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
+exports.mostFrequent = exports.arrayCount = exports.join = exports.chunkify = exports.unique = exports.uniqueBy = exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
 const range = (n) => (n <= 0 ? [] : Array.from(Array(n).keys()));
 exports.range = range;
 const shiftRight = (arr, index, insert, replace = false) => {
@@ -89,3 +89,21 @@ const join = (array, options) => {
     return result;
 };
 exports.join = join;
+const arrayCount = (arr, item) => {
+    return arr.filter((it) => it === item).length;
+};
+exports.arrayCount = arrayCount;
+const mostFrequent = (arr) => {
+    let most = arr[0];
+    let f = -1;
+    for (let i = 0; i < arr.length; i++) {
+        const it = arr[i];
+        const freq = (0, exports.arrayCount)(arr, it);
+        if (freq > f) {
+            f = freq;
+            most = it;
+        }
+    }
+    return most;
+};
+exports.mostFrequent = mostFrequent;

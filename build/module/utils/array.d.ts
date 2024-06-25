@@ -9,3 +9,5 @@ export declare const join: <T>(array: T[], options: {
     prefix?: (index: number) => T | null;
     suffix?: (index: number) => T | null;
 }) => T[];
+export declare const arrayCount: <T = any>(arr: T[], item: T) => number;
+export declare const mostFrequent: <T = any>(arr: T[]) => T;

@@ -78,3 +78,19 @@ export const join = (array, options) => {
     }
     return result;
 };
+export const arrayCount = (arr, item) => {
+    return arr.filter((it) => it === item).length;
+};
+export const mostFrequent = (arr) => {
+    let most = arr[0];
+    let f = -1;
+    for (let i = 0; i < arr.length; i++) {
+        const it = arr[i];
+        const freq = arrayCount(arr, it);
+        if (freq > f) {
+            f = freq;
+            most = it;
+        }
+    }
+    return most;
+};
