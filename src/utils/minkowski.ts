@@ -1,3 +1,4 @@
+import { MAT4_IDENTITY, Mat4, mat4Inverse } from '../matrix';
 import { Mesh } from '../mesh';
 import { VEC31, Vector, vector3_scale, vector3_sub } from '../vector';
 
@@ -75,11 +76,17 @@ export const minkowskiSimplexPushFront = (
 
 export const getMinkowskiPoints = (
   dir: Vector,
-  points: Vector[],
+  mesh: Mesh
 ): MinkowskiPair => {
+  const points = mesh.points;
   if (points.length <= 0)
     return emptyMinkowskiPair;
 
+  dir = dir.clone();
+  if (mesh.rotationMatrix) {
+    dir.w = 1;
+    dir = dir.mulMat4(mat4Inverse(mesh.rotationMatrix));
+  }
 
   let furthest: Vector = points[0];
 
@@ -94,20 +101,26 @@ export const getMinkowskiPoints = (
 
     if (dot > max) {
       max = dot;
-      furthest = v;
+      furthest = v.clone();
     }
 
     if (dot < min) {
       min = dot;
-      closest = v;
+      closest = v.clone();
     }
   }
 
+  const closestLocal = closest.clone();
+  const furthestLocal = furthest.clone();
+  furthest.w = 1;
+  closest.w = 1;
+  closest = mesh.modelMatrix ?  closest.mulMat4(mesh.modelMatrix) : closest;
+  furthest = mesh.modelMatrix ? furthest.mulMat4(mesh.modelMatrix) : furthest;
   return {
     closest: closest,
-    closestLocal: closest,
+    closestLocal: closestLocal,
     furthest: furthest,
-    furthestLocal: furthest,
+    furthestLocal: furthestLocal,
     closestDot: min,
     furthestDot: max,
   };
@@ -120,8 +133,8 @@ export const getMinkowskiSupportPair = (
 ): MinkowskiSupportPair => {
 
 
-  const sa = getMinkowskiPoints(dir, a.points);
-  const sb = getMinkowskiPoints(vector3_scale(dir, -1), b.points);
+  const sa = getMinkowskiPoints(dir, a);
+  const sb = getMinkowskiPoints(vector3_scale(dir, -1), b);
 
   const p1 = sa.furthest;
   const p2 = sb.furthest;

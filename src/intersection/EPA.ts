@@ -372,6 +372,8 @@ export const EPA = (props: EPAProps): EPAResult | null => {
           solved: false,
           velocity_and_restitution: 0
         },
+        simplex: _simplex,
+        tri: normal_data.tri,
         separation: point_depth_a,
         normal: min_normal,
         tangent: t1,
@@ -430,6 +432,8 @@ export const EPA = (props: EPAProps): EPAResult | null => {
           solved: false,
           velocity_and_restitution: 0
         },
+        simplex: _simplex,
+        tri: normal_data.tri,
         separation: point_depth_b,
         normal: min_normal.scale(-1),
         tangent: t2,

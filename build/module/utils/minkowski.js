@@ -1,3 +1,4 @@
+import { mat4Inverse } from '../matrix';
 import { VEC31, vector3_scale, vector3_sub } from '../vector';
 export const emptyMinkowskiPair = {
     closest: VEC31(0),
@@ -31,9 +32,15 @@ export const minkowskiSimplexPushFront = (simplex, pair) => {
     simplex.length = Math.min(simplex.length + 1, 4);
     return simplex;
 };
-export const getMinkowskiPoints = (dir, points) => {
+export const getMinkowskiPoints = (dir, mesh) => {
+    const points = mesh.points;
     if (points.length <= 0)
         return emptyMinkowskiPair;
+    dir = dir.clone();
+    if (mesh.rotationMatrix) {
+        dir.w = 1;
+        dir = dir.mulMat4(mat4Inverse(mesh.rotationMatrix));
+    }
     let furthest = points[0];
     let closest = points[0];
     let min = Infinity;
@@ -43,25 +50,31 @@ export const getMinkowskiPoints = (dir, points) => {
         const dot = dir.dot(v);
         if (dot > max) {
             max = dot;
-            furthest = v;
+            furthest = v.clone();
         }
         if (dot < min) {
             min = dot;
-            closest = v;
+            closest = v.clone();
         }
     }
+    const closestLocal = closest.clone();
+    const furthestLocal = furthest.clone();
+    furthest.w = 1;
+    closest.w = 1;
+    closest = mesh.modelMatrix ? closest.mulMat4(mesh.modelMatrix) : closest;
+    furthest = mesh.modelMatrix ? furthest.mulMat4(mesh.modelMatrix) : furthest;
     return {
         closest: closest,
-        closestLocal: closest,
+        closestLocal: closestLocal,
         furthest: furthest,
-        furthestLocal: furthest,
+        furthestLocal: furthestLocal,
         closestDot: min,
         furthestDot: max,
     };
 };
 export const getMinkowskiSupportPair = (a, b, dir) => {
-    const sa = getMinkowskiPoints(dir, a.points);
-    const sb = getMinkowskiPoints(vector3_scale(dir, -1), b.points);
+    const sa = getMinkowskiPoints(dir, a);
+    const sb = getMinkowskiPoints(vector3_scale(dir, -1), b);
     const p1 = sa.furthest;
     const p2 = sb.furthest;
     const point = vector3_sub(p1, p2);

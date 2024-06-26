@@ -4,6 +4,7 @@ exports.vectorsAverage = exports.vector3_tangents_fast = exports.vector3_tangent
 const etc_1 = require("../utils/etc");
 const array_1 = require("../utils/array");
 const hash_1 = require("../utils/hash");
+const matrix_1 = require("../matrix");
 class Vector {
     constructor(x = 0, y = 0, z = 0, w = 0) {
         this._x = 0;
@@ -14,6 +15,27 @@ class Vector {
         this._y = y !== null && y !== void 0 ? y : 0;
         this._z = z !== null && z !== void 0 ? z : 0;
         this._w = w !== null && w !== void 0 ? w : 0;
+    }
+    get xy() {
+        return (0, exports.VEC2)(this.x, this.y);
+    }
+    get yx() {
+        return (0, exports.VEC2)(this.y, this.x);
+    }
+    get xyz() {
+        return (0, exports.VEC3)(this.x, this.y, this.z);
+    }
+    get yxz() {
+        return (0, exports.VEC3)(this.y, this.x, this.z);
+    }
+    get yzx() {
+        return (0, exports.VEC3)(this.y, this.z, this.x);
+    }
+    get zyx() {
+        return (0, exports.VEC3)(this.z, this.y, this.x);
+    }
+    get xzy() {
+        return (0, exports.VEC3)(this.x, this.z, this.y);
     }
     get x() {
         var _a;
@@ -54,6 +76,12 @@ class Vector {
     }
     mul(b) {
         return new Vector(this.x * b.x, this.y * b.y, this.z * b.z, this.w * b.w);
+    }
+    mulMat4(matrix) {
+        return (0, matrix_1.mat4MulV4)(matrix, this);
+    }
+    static mulMat4(points, matrix, w = 1) {
+        return points.map(p => (0, exports.VEC4)(p.x, p.y, p.z, w).mulMat4(matrix));
     }
     static sum(vectors) {
         let v = new Vector(0, 0, 0, 0);

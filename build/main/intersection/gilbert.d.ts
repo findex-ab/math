@@ -5,6 +5,7 @@ import { EPAConfig } from './EPA';
 export type GilbertConfig = {
     initialAxis?: Vector;
     maxIterations?: number;
+    skipTetra?: boolean;
     EPA?: EPAConfig;
 };
 export type GilbertProps = {

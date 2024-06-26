@@ -31,5 +31,5 @@ export declare const emptyMinkowskiPair: MinkowskiPair;
 export declare const emptyMinkowskiSupportPair: MinkowskiSupportPair;
 export declare const emptyMinkowskiTriangle: MinkowskiSupportTriangle;
 export declare const minkowskiSimplexPushFront: (simplex: MinkowskiSimplex, pair: MinkowskiSupportPair) => MinkowskiSimplex;
-export declare const getMinkowskiPoints: (dir: Vector, points: Vector[]) => MinkowskiPair;
+export declare const getMinkowskiPoints: (dir: Vector, mesh: Mesh) => MinkowskiPair;
 export declare const getMinkowskiSupportPair: (a: Mesh, b: Mesh, dir: Vector) => MinkowskiSupportPair;

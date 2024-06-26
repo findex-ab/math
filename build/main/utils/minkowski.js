@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getMinkowskiSupportPair = exports.getMinkowskiPoints = exports.minkowskiSimplexPushFront = exports.emptyMinkowskiTriangle = exports.emptyMinkowskiSupportPair = exports.emptyMinkowskiPair = void 0;
+const matrix_1 = require("../matrix");
 const vector_1 = require("../vector");
 exports.emptyMinkowskiPair = {
     closest: (0, vector_1.VEC31)(0),
@@ -35,9 +36,15 @@ const minkowskiSimplexPushFront = (simplex, pair) => {
     return simplex;
 };
 exports.minkowskiSimplexPushFront = minkowskiSimplexPushFront;
-const getMinkowskiPoints = (dir, points) => {
+const getMinkowskiPoints = (dir, mesh) => {
+    const points = mesh.points;
     if (points.length <= 0)
         return exports.emptyMinkowskiPair;
+    dir = dir.clone();
+    if (mesh.rotationMatrix) {
+        dir.w = 1;
+        dir = dir.mulMat4((0, matrix_1.mat4Inverse)(mesh.rotationMatrix));
+    }
     let furthest = points[0];
     let closest = points[0];
     let min = Infinity;
@@ -47,26 +54,32 @@ const getMinkowskiPoints = (dir, points) => {
         const dot = dir.dot(v);
         if (dot > max) {
             max = dot;
-            furthest = v;
+            furthest = v.clone();
         }
         if (dot < min) {
             min = dot;
-            closest = v;
+            closest = v.clone();
         }
     }
+    const closestLocal = closest.clone();
+    const furthestLocal = furthest.clone();
+    furthest.w = 1;
+    closest.w = 1;
+    closest = mesh.modelMatrix ? closest.mulMat4(mesh.modelMatrix) : closest;
+    furthest = mesh.modelMatrix ? furthest.mulMat4(mesh.modelMatrix) : furthest;
     return {
         closest: closest,
-        closestLocal: closest,
+        closestLocal: closestLocal,
         furthest: furthest,
-        furthestLocal: furthest,
+        furthestLocal: furthestLocal,
         closestDot: min,
         furthestDot: max,
     };
 };
 exports.getMinkowskiPoints = getMinkowskiPoints;
 const getMinkowskiSupportPair = (a, b, dir) => {
-    const sa = (0, exports.getMinkowskiPoints)(dir, a.points);
-    const sb = (0, exports.getMinkowskiPoints)((0, vector_1.vector3_scale)(dir, -1), b.points);
+    const sa = (0, exports.getMinkowskiPoints)(dir, a);
+    const sb = (0, exports.getMinkowskiPoints)((0, vector_1.vector3_scale)(dir, -1), b);
     const p1 = sa.furthest;
     const p2 = sb.furthest;
     const point = (0, vector_1.vector3_sub)(p1, p2);

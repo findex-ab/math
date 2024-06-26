@@ -1,3 +1,4 @@
+import { INF } from "../constants";
 import { VEC2, VEC3, VEC31, vector3_add, vector3_sub } from "../vector";
 export const aabbSub = (a, b) => {
     return {
@@ -117,4 +118,20 @@ export const getAABBPoints3D = (aabb) => {
     out[22] = vector3_add(min, v23);
     out[23] = vector3_add(min, v24);
     return out;
+};
+export const aabbFromPoints = (points) => {
+    if (points.length <= 0)
+        return { min: VEC31(0), max: VEC31(0) };
+    const min = VEC3(INF, INF, INF);
+    const max = min.scale(-1);
+    for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+        min.x = Math.min(min.x, p.x);
+        min.y = Math.min(min.y, p.y);
+        min.z = Math.min(min.z, p.z);
+        max.x = Math.max(max.x, p.x);
+        max.y = Math.max(max.y, p.y);
+        max.z = Math.max(max.z, p.z);
+    }
+    return { min, max };
 };

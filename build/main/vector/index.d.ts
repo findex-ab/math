@@ -1,3 +1,4 @@
+import { Mat4 } from '../matrix';
 export interface IVector {
     x: number;
     y: number;
@@ -10,6 +11,13 @@ export declare class Vector implements IVector {
     _z: number;
     _w: number;
     constructor(x?: number, y?: number, z?: number, w?: number);
+    get xy(): Vector;
+    get yx(): Vector;
+    get xyz(): Vector;
+    get yxz(): Vector;
+    get yzx(): Vector;
+    get zyx(): Vector;
+    get xzy(): Vector;
     get x(): number;
     get y(): number;
     get z(): number;
@@ -22,6 +30,8 @@ export declare class Vector implements IVector {
     add(b: Vector): Vector;
     sub(b: Vector): Vector;
     mul(b: Vector): Vector;
+    mulMat4(matrix: Mat4): Vector;
+    static mulMat4(points: Vector[], matrix: Mat4, w?: number): Vector[];
     static sum(vectors: Vector[]): Vector;
     static avg(vectors: Vector[]): Vector;
     rotate(radians: number, axis: Vector): Vector;

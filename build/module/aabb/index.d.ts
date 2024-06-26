@@ -19,3 +19,4 @@ export declare const AABBvsAABB: (a: AABB, b: AABB) => boolean;
 export declare const pointVSAABB: (point: Vector, bounds: AABB) => boolean;
 export declare const getAABBPoints: (a: AABB) => Vector[];
 export declare const getAABBPoints3D: (aabb: AABB) => Vector[];
+export declare const aabbFromPoints: (points: Vector[]) => AABB;

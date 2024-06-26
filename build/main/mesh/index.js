@@ -14,6 +14,21 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.meshSupport = void 0;
+const constants_1 = require("../constants");
 __exportStar(require("./edge"), exports);
 __exportStar(require("./triangle"), exports);
 __exportStar(require("./line"), exports);
+const meshSupport = (mesh, dir) => {
+    let furthestDistance = -constants_1.INF;
+    let furthestVertex = mesh.points[0];
+    for (const v of mesh.points) {
+        let distance = v.dot(dir);
+        if (distance > furthestDistance) {
+            furthestDistance = distance;
+            furthestVertex = v;
+        }
+    }
+    return furthestVertex;
+};
+exports.meshSupport = meshSupport;

@@ -1,8 +1,8 @@
-import { AABB } from "../aabb";
-import { Mat4 } from "../matrix";
-import { Mesh } from "../mesh";
-import { Vector } from "../vector";
-export type PhysicsBody = {
+import { AABB } from '../aabb';
+import { Mat4 } from '../matrix';
+import { Mesh } from '../mesh';
+import { Vector } from '../vector';
+export type IPhysicsBody = {
     position: Vector;
     rotation: Vector;
     linearVelocity: Vector;
@@ -11,10 +11,37 @@ export type PhysicsBody = {
     canRotate: boolean;
     mesh: Mesh;
     bounds: AABB;
+    mass: number;
+    invMass: number;
+    center: Vector;
 };
+export type PhysicsBodyProps = Partial<PhysicsBody>;
+export declare class PhysicsBody implements IPhysicsBody {
+    position: Vector;
+    rotation: Vector;
+    linearVelocity: Vector;
+    angularVelocity: Vector;
+    canMove: boolean;
+    canRotate: boolean;
+    mesh: Mesh;
+    bounds: AABB;
+    mass: number;
+    invMass: number;
+    center: Vector;
+    constructor(init: IPhysicsBody);
+    support(dir: Vector): Vector;
+    addImpulse(impulse: Vector): void;
+    addImpulseAtPoint(impulse: Vector, point: Vector): void;
+    addPseudoImpulse(impulse: Vector): void;
+    addPseudoImpulseAtPoint(impulse: Vector, point: Vector, dt?: number): void;
+    applyAngularVelocity(angularVelocity: Vector, dt: number): void;
+}
+export declare const physicsBodyAddImpulse: (body: PhysicsBody, impulse: Vector) => void;
+export declare const physicsBodyIntegrate: (body: PhysicsBody, dt: number) => void;
 export declare const physicsBodyGetIntegratedRotation: (body: PhysicsBody, dt: number) => Vector;
 export declare const physicsBodyGetTranslationMatrix: (body: PhysicsBody) => Mat4;
 export declare const physicsBodyGetRotationMatrix: (body: PhysicsBody) => Mat4;
 export declare const physicsBodyGetMatrix: (body: PhysicsBody) => Mat4;
 export declare const physicsBodyPointLocalToGlobal: (body: PhysicsBody, point: Vector) => Vector;
 export declare const physicsBodyPointGlobalToLocal: (body: PhysicsBody, point: Vector) => Vector;
+export declare const physicsBody: (props: PhysicsBodyProps) => PhysicsBody;

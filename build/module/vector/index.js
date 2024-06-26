@@ -1,6 +1,7 @@
 import { clamp, lerp as mix } from '../utils/etc';
 import { range } from '../utils/array';
 import { hexToUint32, nthByte } from '../utils/hash';
+import { mat4MulV4 } from '../matrix';
 export class Vector {
     _x = 0;
     _y = 0;
@@ -11,6 +12,27 @@ export class Vector {
         this._y = y ?? 0;
         this._z = z ?? 0;
         this._w = w ?? 0;
+    }
+    get xy() {
+        return VEC2(this.x, this.y);
+    }
+    get yx() {
+        return VEC2(this.y, this.x);
+    }
+    get xyz() {
+        return VEC3(this.x, this.y, this.z);
+    }
+    get yxz() {
+        return VEC3(this.y, this.x, this.z);
+    }
+    get yzx() {
+        return VEC3(this.y, this.z, this.x);
+    }
+    get zyx() {
+        return VEC3(this.z, this.y, this.x);
+    }
+    get xzy() {
+        return VEC3(this.x, this.z, this.y);
     }
     get x() {
         return this._x ?? 0;
@@ -47,6 +69,12 @@ export class Vector {
     }
     mul(b) {
         return new Vector(this.x * b.x, this.y * b.y, this.z * b.z, this.w * b.w);
+    }
+    mulMat4(matrix) {
+        return mat4MulV4(matrix, this);
+    }
+    static mulMat4(points, matrix, w = 1) {
+        return points.map(p => VEC4(p.x, p.y, p.z, w).mulMat4(matrix));
     }
     static sum(vectors) {
         let v = new Vector(0, 0, 0, 0);

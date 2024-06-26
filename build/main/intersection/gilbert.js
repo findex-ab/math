@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.gilbert = void 0;
+const body_1 = require("../physics/body");
 const minkowski_1 = require("../utils/minkowski");
 const vector_1 = require("../vector");
 const EPSILON = 0.00000001;
@@ -19,7 +20,7 @@ const nextLine = (simplex) => {
     }
     return null;
 };
-const gilbert_next_triangle = (simplex) => {
+const gilbert_next_triangle = (simplex, props) => {
     const a = simplex.supports[0];
     const b = simplex.supports[1];
     const c = simplex.supports[2];
@@ -38,7 +39,7 @@ const gilbert_next_triangle = (simplex) => {
             simplex.supports[0] = a;
             simplex.supports[1] = b;
             simplex.length = 2;
-            return gilbert_next(simplex);
+            return gilbert_next(simplex, props);
         }
     }
     else {
@@ -46,7 +47,7 @@ const gilbert_next_triangle = (simplex) => {
             simplex.supports[0] = a;
             simplex.supports[1] = b;
             simplex.length = 2;
-            return gilbert_next(simplex);
+            return gilbert_next(simplex, props);
         }
         else {
             if ((0, vector_1.samedir)(abc, ao)) {
@@ -61,9 +62,9 @@ const gilbert_next_triangle = (simplex) => {
             }
         }
     }
-    return null; // options.ignore_z ? 1 : 0;//options.use_tetra ? 0 : 1;
+    return null; //props.config?.skipTetra === false ? gilbert_next_tetra(simplex, props) : simplex;
 };
-const gilbert_next_tetra = (simplex) => {
+const gilbert_next_tetra = (simplex, props) => {
     const a = simplex.supports[0];
     const b = simplex.supports[1];
     const c = simplex.supports[2];
@@ -80,32 +81,32 @@ const gilbert_next_tetra = (simplex) => {
         simplex.supports[1] = b;
         simplex.supports[2] = c;
         simplex.length = 3;
-        return gilbert_next(simplex);
+        return gilbert_next(simplex, props);
     }
     if ((0, vector_1.samedir)(acd, ao)) {
         simplex.supports[0] = a;
         simplex.supports[1] = c;
         simplex.supports[2] = d;
         simplex.length = 3;
-        return gilbert_next(simplex);
+        return gilbert_next(simplex, props);
     }
     if ((0, vector_1.samedir)(adb, ao)) {
         simplex.supports[0] = a;
         simplex.supports[1] = d;
         simplex.supports[2] = b;
         simplex.length = 3;
-        return gilbert_next(simplex);
+        return gilbert_next(simplex, props);
     }
     return simplex;
 };
-const gilbert_next = (simplex) => {
+const gilbert_next = (simplex, props) => {
     switch (simplex.length) {
         case 2:
             return nextLine(simplex);
         case 3:
-            return gilbert_next_triangle(simplex);
+            return gilbert_next_triangle(simplex, props);
         case 4:
-            return gilbert_next_tetra(simplex);
+            return gilbert_next_tetra(simplex, props);
         default: {
             throw new Error('length is: ' + simplex.length);
         }
@@ -122,7 +123,11 @@ const gilbert = (props) => {
         dir: initial_axis,
         length: 0,
     };
-    let pair = (0, minkowski_1.getMinkowskiSupportPair)(a.mesh, b.mesh, initial_axis);
+    const meshA = Object.assign(Object.assign({}, a.mesh), { translationMatrix: (0, body_1.physicsBodyGetTranslationMatrix)(a), modelMatrix: (0, body_1.physicsBodyGetMatrix)(a), rotationMatrix: (0, body_1.physicsBodyGetRotationMatrix)(a) });
+    a.mesh = meshA;
+    const meshB = Object.assign(Object.assign({}, b.mesh), { translationMatrix: (0, body_1.physicsBodyGetTranslationMatrix)(b), modelMatrix: (0, body_1.physicsBodyGetMatrix)(b), rotationMatrix: (0, body_1.physicsBodyGetRotationMatrix)(b) });
+    b.mesh = meshB;
+    let pair = (0, minkowski_1.getMinkowskiSupportPair)(meshA, meshB, initial_axis);
     let support = pair.point;
     simplex.support = pair;
     simplex.supports[0] = pair;
@@ -132,7 +137,7 @@ const gilbert = (props) => {
     if ((0, vector_1.vector3_mag)(dir) <= EPSILON)
         return null;
     for (let i = 0; i < max_iter; i++) {
-        pair = (0, minkowski_1.getMinkowskiSupportPair)(a.mesh, b.mesh, simplex.dir);
+        pair = (0, minkowski_1.getMinkowskiSupportPair)(meshA, meshB, simplex.dir);
         const support = pair.point;
         if ((0, vector_1.vector3_dot)(support, simplex.dir) <= 0) {
             return null;
@@ -141,7 +146,7 @@ const gilbert = (props) => {
             return null;
         }
         simplex = (0, minkowski_1.minkowskiSimplexPushFront)(simplex, pair);
-        if (gilbert_next(simplex)) {
+        if (gilbert_next(simplex, props)) {
             simplex.support = pair;
             return simplex;
         }

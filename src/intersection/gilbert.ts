@@ -1,4 +1,5 @@
-import { PhysicsBody } from '../physics/body';
+import { Mesh } from '../mesh';
+import { PhysicsBody, physicsBodyGetMatrix, physicsBodyGetRotationMatrix, physicsBodyGetTranslationMatrix } from '../physics/body';
 import {
   MinkowskiSimplex,
   MinkowskiSupportPair,
@@ -20,6 +21,20 @@ import { EPAConfig } from './EPA';
 
 const EPSILON = 0.00000001;
 
+export type GilbertConfig = {
+  initialAxis?: Vector;
+  maxIterations?: number;
+  skipTetra?: boolean;
+  EPA?: EPAConfig;
+};
+
+export type GilbertProps = {
+  config?: GilbertConfig;
+  a: PhysicsBody;
+  b: PhysicsBody;
+};
+
+
 const nextLine = (simplex: MinkowskiSimplex): MinkowskiSimplex | null => {
   const a = simplex.supports[0];
   const b = simplex.supports[1];
@@ -39,6 +54,7 @@ const nextLine = (simplex: MinkowskiSimplex): MinkowskiSimplex | null => {
 
 const gilbert_next_triangle = (
   simplex: MinkowskiSimplex,
+  props: GilbertProps
 ): MinkowskiSimplex | null => {
   const a = simplex.supports[0];
   const b = simplex.supports[1];
@@ -61,7 +77,7 @@ const gilbert_next_triangle = (
       simplex.supports[1] = b;
 
       simplex.length = 2;
-      return gilbert_next(simplex);
+      return gilbert_next(simplex, props);
     }
   } else {
     if (samedir(vector3_cross(ab, abc), ao)) {
@@ -69,7 +85,7 @@ const gilbert_next_triangle = (
       simplex.supports[1] = b;
 
       simplex.length = 2;
-      return gilbert_next(simplex);
+      return gilbert_next(simplex, props);
     } else {
       if (samedir(abc, ao)) {
         simplex.dir = abc;
@@ -84,11 +100,12 @@ const gilbert_next_triangle = (
     }
   }
 
-  return null; // options.ignore_z ? 1 : 0;//options.use_tetra ? 0 : 1;
+  return null;//props.config?.skipTetra === false ? gilbert_next_tetra(simplex, props) : simplex;
 };
 
 const gilbert_next_tetra = (
   simplex: MinkowskiSimplex,
+  props: GilbertProps
 ): MinkowskiSimplex | null => {
   const a = simplex.supports[0];
   const b = simplex.supports[1];
@@ -110,7 +127,7 @@ const gilbert_next_tetra = (
     simplex.supports[2] = c;
 
     simplex.length = 3;
-    return gilbert_next(simplex);
+    return gilbert_next(simplex, props);
   }
 
   if (samedir(acd, ao)) {
@@ -119,7 +136,7 @@ const gilbert_next_tetra = (
     simplex.supports[2] = d;
 
     simplex.length = 3;
-    return gilbert_next(simplex);
+    return gilbert_next(simplex, props);
   }
 
   if (samedir(adb, ao)) {
@@ -128,36 +145,24 @@ const gilbert_next_tetra = (
     simplex.supports[2] = b;
 
     simplex.length = 3;
-    return gilbert_next(simplex);
+    return gilbert_next(simplex, props);
   }
 
   return simplex;
 };
 
-const gilbert_next = (simplex: MinkowskiSimplex): MinkowskiSimplex | null => {
+const gilbert_next = (simplex: MinkowskiSimplex, props: GilbertProps): MinkowskiSimplex | null => {
   switch (simplex.length) {
     case 2:
       return nextLine(simplex);
     case 3:
-      return gilbert_next_triangle(simplex);
+      return gilbert_next_triangle(simplex, props);
     case 4:
-      return gilbert_next_tetra(simplex);
+      return gilbert_next_tetra(simplex, props);
     default: {
       throw new Error('length is: ' + simplex.length);
     }
   }
-};
-
-export type GilbertConfig = {
-  initialAxis?: Vector;
-  maxIterations?: number;
-  EPA?: EPAConfig;
-};
-
-export type GilbertProps = {
-  config?: GilbertConfig;
-  a: PhysicsBody;
-  b: PhysicsBody;
 };
 
 export const gilbert = (props: GilbertProps): MinkowskiSimplex | null => {
@@ -166,15 +171,31 @@ export const gilbert = (props: GilbertProps): MinkowskiSimplex | null => {
   const { a, b } = props;
 
   let simplex: MinkowskiSimplex | null = {
-    supports: [],
+    supports: [  ],
     support: emptyMinkowskiSupportPair,
     dir: initial_axis,
     length: 0,
   };
 
+  const meshA:Mesh = {
+    ...a.mesh,
+    translationMatrix: physicsBodyGetTranslationMatrix(a),
+    modelMatrix: physicsBodyGetMatrix(a),
+    rotationMatrix: physicsBodyGetRotationMatrix(a)
+  };
+  a.mesh = meshA;
+  const meshB:Mesh = {
+    ...b.mesh,
+    translationMatrix: physicsBodyGetTranslationMatrix(b),
+    modelMatrix: physicsBodyGetMatrix(b),
+    rotationMatrix: physicsBodyGetRotationMatrix(b)
+  };
+  b.mesh = meshB;
+
+
   let pair: MinkowskiSupportPair = getMinkowskiSupportPair(
-    a.mesh,
-    b.mesh,
+    meshA,
+    meshB,
     initial_axis,
   );
   let support = pair.point;
@@ -188,7 +209,7 @@ export const gilbert = (props: GilbertProps): MinkowskiSimplex | null => {
   if (vector3_mag(dir) <= EPSILON) return null;
 
   for (let i = 0; i < max_iter; i++) {
-    pair = getMinkowskiSupportPair(a.mesh, b.mesh, simplex.dir);
+    pair = getMinkowskiSupportPair(meshA, meshB, simplex.dir);
     const support = pair.point;
 
     if (vector3_dot(support, simplex.dir) <= 0) {
@@ -201,7 +222,7 @@ export const gilbert = (props: GilbertProps): MinkowskiSimplex | null => {
 
     simplex = minkowskiSimplexPushFront(simplex, pair);
 
-    if (gilbert_next(simplex)) {
+    if (gilbert_next(simplex, props)) {
       simplex.support = pair;
 
       return simplex;

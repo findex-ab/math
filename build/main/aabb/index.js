@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAABBPoints3D = exports.getAABBPoints = exports.pointVSAABB = exports.AABBvsAABB = exports.getAABBSize = exports.getAABBCenter = exports.aabbTranslate = exports.aabbCorrect = exports.aabbFromSize = exports.aabbSub = void 0;
+exports.aabbFromPoints = exports.getAABBPoints3D = exports.getAABBPoints = exports.pointVSAABB = exports.AABBvsAABB = exports.getAABBSize = exports.getAABBCenter = exports.aabbTranslate = exports.aabbCorrect = exports.aabbFromSize = exports.aabbSub = void 0;
+const constants_1 = require("../constants");
 const vector_1 = require("../vector");
 const aabbSub = (a, b) => {
     return {
@@ -131,3 +132,20 @@ const getAABBPoints3D = (aabb) => {
     return out;
 };
 exports.getAABBPoints3D = getAABBPoints3D;
+const aabbFromPoints = (points) => {
+    if (points.length <= 0)
+        return { min: (0, vector_1.VEC31)(0), max: (0, vector_1.VEC31)(0) };
+    const min = (0, vector_1.VEC3)(constants_1.INF, constants_1.INF, constants_1.INF);
+    const max = min.scale(-1);
+    for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+        min.x = Math.min(min.x, p.x);
+        min.y = Math.min(min.y, p.y);
+        min.z = Math.min(min.z, p.z);
+        max.x = Math.max(max.x, p.x);
+        max.y = Math.max(max.y, p.y);
+        max.z = Math.max(max.z, p.z);
+    }
+    return { min, max };
+};
+exports.aabbFromPoints = aabbFromPoints;
