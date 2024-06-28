@@ -337,3 +337,12 @@ export const vectorsAverage = (points: Vector[]): Vector => {
 
   return p.scale(1.0 / points.length);
 }
+
+export const vectorIsUnique = (v: Vector, arr: Vector[], epsilon: number = 0.00001) => {
+  for (let i = 0; i < arr.length; i++) {
+    const b = arr[i];
+    if (v.distance(b) <= epsilon) return false;
+  }
+
+  return true;
+}

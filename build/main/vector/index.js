@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.vectorsAverage = exports.vector3_tangents_fast = exports.vector3_tangents_slow = exports.vector3_mag = exports.vector3_unit = exports.vector3_scale = exports.vector3_add = exports.vector3_sub = exports.vector3_cross = exports.vector3_dot = exports.samedir = exports.VEC31 = exports.VEC2 = exports.VEC3 = exports.VEC4 = exports.isVector = exports.Vector = void 0;
+exports.vectorIsUnique = exports.vectorsAverage = exports.vector3_tangents_fast = exports.vector3_tangents_slow = exports.vector3_mag = exports.vector3_unit = exports.vector3_scale = exports.vector3_add = exports.vector3_sub = exports.vector3_cross = exports.vector3_dot = exports.samedir = exports.VEC31 = exports.VEC2 = exports.VEC3 = exports.VEC4 = exports.isVector = exports.Vector = void 0;
 const etc_1 = require("../utils/etc");
 const array_1 = require("../utils/array");
 const hash_1 = require("../utils/hash");
@@ -280,3 +280,12 @@ const vectorsAverage = (points) => {
     return p.scale(1.0 / points.length);
 };
 exports.vectorsAverage = vectorsAverage;
+const vectorIsUnique = (v, arr, epsilon = 0.00001) => {
+    for (let i = 0; i < arr.length; i++) {
+        const b = arr[i];
+        if (v.distance(b) <= epsilon)
+            return false;
+    }
+    return true;
+};
+exports.vectorIsUnique = vectorIsUnique;

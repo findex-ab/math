@@ -77,3 +77,4 @@ export declare const vector3_mag: (a: Vector) => number;
 export declare const vector3_tangents_slow: (n: Vector) => VectorPair;
 export declare const vector3_tangents_fast: (n: Vector) => VectorPair;
 export declare const vectorsAverage: (points: Vector[]) => Vector;
+export declare const vectorIsUnique: (v: Vector, arr: Vector[], epsilon?: number) => boolean;
