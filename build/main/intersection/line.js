@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findLineIntersection3D = exports.findLineIntersection2D = void 0;
+exports.findClosestPointOnLine = exports.findLineIntersection3D = exports.findLineIntersection2D = void 0;
 const vector_1 = require("../vector");
 const lineIntersection = (lineA, lineB, is3D) => {
     const crossScalar = (a, b) => {
@@ -23,7 +23,7 @@ const lineIntersection = (lineA, lineB, is3D) => {
         return {
             point: p,
             depth: 0,
-            normal: (0, vector_1.VEC3)(u, t, 0)
+            normal: (0, vector_1.VEC3)(u, t, 0),
         };
     }
     return null;
@@ -32,3 +32,13 @@ const findLineIntersection2D = (lineA, lineB) => lineIntersection(lineA, lineB, 
 exports.findLineIntersection2D = findLineIntersection2D;
 const findLineIntersection3D = (lineA, lineB) => lineIntersection(lineA, lineB, true);
 exports.findLineIntersection3D = findLineIntersection3D;
+const findClosestPointOnLine = (point, line) => {
+    const { a: lineStart, b: lineEnd } = line;
+    const lineVec = lineEnd.sub(lineStart);
+    const pointVec = point.sub(lineStart);
+    const lineLenSq = lineVec.dot(lineVec);
+    const t = Math.max(0, Math.min(1, pointVec.dot(lineVec) / lineLenSq));
+    const closestPoint = lineStart.add(lineVec.scale(t));
+    return closestPoint;
+};
+exports.findClosestPointOnLine = findClosestPointOnLine;

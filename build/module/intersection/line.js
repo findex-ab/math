@@ -1,4 +1,4 @@
-import { VEC3 } from "../vector";
+import { VEC3 } from '../vector';
 const lineIntersection = (lineA, lineB, is3D) => {
     const crossScalar = (a, b) => {
         if (is3D)
@@ -20,10 +20,19 @@ const lineIntersection = (lineA, lineB, is3D) => {
         return {
             point: p,
             depth: 0,
-            normal: VEC3(u, t, 0)
+            normal: VEC3(u, t, 0),
         };
     }
     return null;
 };
 export const findLineIntersection2D = (lineA, lineB) => lineIntersection(lineA, lineB, false);
 export const findLineIntersection3D = (lineA, lineB) => lineIntersection(lineA, lineB, true);
+export const findClosestPointOnLine = (point, line) => {
+    const { a: lineStart, b: lineEnd } = line;
+    const lineVec = lineEnd.sub(lineStart);
+    const pointVec = point.sub(lineStart);
+    const lineLenSq = lineVec.dot(lineVec);
+    const t = Math.max(0, Math.min(1, pointVec.dot(lineVec) / lineLenSq));
+    const closestPoint = lineStart.add(lineVec.scale(t));
+    return closestPoint;
+};
