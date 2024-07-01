@@ -3,6 +3,11 @@ export type AABB = {
     min: Vector;
     max: Vector;
 };
+export declare const aabbUniform: (bounds: AABB) => {
+    min: Vector;
+    max: Vector;
+};
+export declare const aabbSlice2D: (bounds: AABB, epsilon?: number) => AABB[];
 export declare const aabbSub: (a: AABB, b: AABB) => {
     min: Vector;
     max: Vector;

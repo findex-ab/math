@@ -1,8 +1,41 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.aabbFromPoints = exports.getAABBPoints3D = exports.getAABBPoints = exports.pointVSAABB = exports.AABBvsAABB = exports.getAABBSize = exports.getAABBCenter = exports.aabbTranslate = exports.aabbCorrect = exports.aabbFromSize = exports.aabbSub = void 0;
+exports.aabbFromPoints = exports.getAABBPoints3D = exports.getAABBPoints = exports.pointVSAABB = exports.AABBvsAABB = exports.getAABBSize = exports.getAABBCenter = exports.aabbTranslate = exports.aabbCorrect = exports.aabbFromSize = exports.aabbSub = exports.aabbSlice2D = exports.aabbUniform = void 0;
 const constants_1 = require("../constants");
 const vector_1 = require("../vector");
+const aabbUniform = (bounds) => {
+    const size = bounds.max.sub(bounds.min);
+    const max = Math.max(...size.toArray());
+    return {
+        min: bounds.min,
+        max: bounds.min.add((0, vector_1.VEC31)(max))
+    };
+};
+exports.aabbUniform = aabbUniform;
+const aabbSlice2D = (bounds, epsilon = 0.0001) => {
+    const out = [];
+    const layout = [
+        (0, vector_1.VEC3)(0, 0, 0),
+        (0, vector_1.VEC3)(0, 1, 0),
+        (0, vector_1.VEC3)(1, 0, 0),
+        (0, vector_1.VEC3)(1, 1, 0)
+    ];
+    const size = bounds.max.sub(bounds.min);
+    const half = size.scale(0.5);
+    const mid = bounds.min.add(half);
+    const min = bounds.min;
+    for (let i = 0; i < 4; i++) {
+        const comb = layout[i];
+        const child = { min: (0, vector_1.VEC2)(0, 0), max: (0, vector_1.VEC2)(0, 0) };
+        child.min.x = Math.abs(comb.at(0)) <= epsilon ? min.x : mid.x;
+        child.min.y = Math.abs(comb.at(1)) <= epsilon ? min.y : mid.y;
+        child.min.z = Math.abs(comb.at(2)) <= epsilon ? min.z : mid.z;
+        child.max = child.min.add(half);
+        out.push(child);
+    }
+    return out;
+};
+exports.aabbSlice2D = aabbSlice2D;
 const aabbSub = (a, b) => {
     return {
         min: a.min.sub(b.min),

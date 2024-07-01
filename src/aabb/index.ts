@@ -6,6 +6,41 @@ export type AABB = {
   max: Vector
 }
 
+export const aabbUniform = (bounds: AABB) => {
+  const size = bounds.max.sub(bounds.min);
+  const max = Math.max(...size.toArray());
+  return {
+    min: bounds.min,
+    max: bounds.min.add(VEC31(max))
+  }
+}
+
+export const aabbSlice2D = (bounds: AABB, epsilon: number = 0.0001) => {
+  const out: AABB[] = [];
+  const layout = [
+    VEC3(0, 0, 0),
+    VEC3(0, 1, 0),
+    VEC3(1, 0, 0),
+    VEC3(1, 1, 0)
+  ];
+
+  const size = bounds.max.sub(bounds.min);
+  const half = size.scale(0.5);
+  const mid = bounds.min.add(half);
+  const min = bounds.min;
+
+  for (let i = 0; i < 4; i++) {
+    const comb = layout[i];
+    const child: AABB = { min: VEC2(0, 0), max: VEC2(0, 0) };
+    child.min.x = Math.abs(comb.at(0)) <= epsilon ? min.x : mid.x;
+    child.min.y = Math.abs(comb.at(1)) <= epsilon ? min.y : mid.y;
+    child.min.z = Math.abs(comb.at(2)) <= epsilon ? min.z : mid.z;
+    child.max = child.min.add(half);
+    out.push(child);
+  }
+  return out;
+}
+
 export const aabbSub = (a: AABB, b: AABB) => {
   return {
     min: a.min.sub(b.min),

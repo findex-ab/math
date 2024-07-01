@@ -21,6 +21,7 @@ __exportStar(require("./utils/is"), exports);
 __exportStar(require("./utils/string"), exports);
 __exportStar(require("./utils/minkowski"), exports);
 __exportStar(require("./aabb"), exports);
+__exportStar(require("./quadtree"), exports);
 __exportStar(require("./matrix"), exports);
 __exportStar(require("./quat"), exports);
 __exportStar(require("./intersection/EPA"), exports);
