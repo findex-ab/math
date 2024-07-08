@@ -10,6 +10,10 @@ export const isDate = (x: any): x is Date => {
 };
 
 export const isNumber = (x: any): x is number => typeof x === 'number';
+export const isSafeNumber = (x: any): x is number => {
+  if (!isNumber(x)) return false;
+  return isFinite(x) && !isNaN(x);
+}
 export const isFloat = (x: any): x is number =>
   isNumber(x) && x.toString().includes('.');
 export const isString = (x: any): x is string => typeof x === 'string';

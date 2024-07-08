@@ -56,6 +56,7 @@ export declare class Vector implements IVector {
     toString(count?: number, separator?: string): string;
     at(index: number): number;
     toArray<T extends number[] = number[]>(n?: number): T;
+    isSafe(): boolean;
 }
 export declare const isVector: (x: any) => x is Vector;
 export declare const VEC4: (x: number, y: number, z: number, w: number) => Vector;

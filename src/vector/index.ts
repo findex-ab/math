@@ -2,6 +2,7 @@ import { clamp, lerp as mix } from '../utils/etc';
 import { range } from '../utils/array';
 import { hexToUint32, nthByte } from '../utils/hash';
 import { Mat4, mat4MulV4 } from '../matrix';
+import { isSafeNumber } from '../utils/is';
 
 export interface IVector {
   x: number;
@@ -264,6 +265,11 @@ export class Vector implements IVector {
       case 4:
         return [this.x, this.y, this.z, this.w] as T;
     }
+  }
+
+  isSafe(): boolean {
+    const items = this.toArray();
+    return items.filter(it => isSafeNumber(it)).length >= items.length;
   }
 }
 

@@ -11,6 +11,11 @@ export const isDate = (x) => {
     return !!x.getDay;
 };
 export const isNumber = (x) => typeof x === 'number';
+export const isSafeNumber = (x) => {
+    if (!isNumber(x))
+        return false;
+    return isFinite(x) && !isNaN(x);
+};
 export const isFloat = (x) => isNumber(x) && x.toString().includes('.');
 export const isString = (x) => typeof x === 'string';
 export const isBoolean = (x) => typeof x === 'boolean';

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isHTMLElement = exports.isNumerical = exports.isAlpha = exports.isDigit = exports.isUndefined = exports.isFactor = exports.isBoolean = exports.isString = exports.isFloat = exports.isNumber = exports.isDate = exports.isFunction = void 0;
+exports.isHTMLElement = exports.isNumerical = exports.isAlpha = exports.isDigit = exports.isUndefined = exports.isFactor = exports.isBoolean = exports.isString = exports.isFloat = exports.isSafeNumber = exports.isNumber = exports.isDate = exports.isFunction = void 0;
 const isFunction = (v) => {
     if (!v)
         return false;
@@ -17,6 +17,12 @@ const isDate = (x) => {
 exports.isDate = isDate;
 const isNumber = (x) => typeof x === 'number';
 exports.isNumber = isNumber;
+const isSafeNumber = (x) => {
+    if (!(0, exports.isNumber)(x))
+        return false;
+    return isFinite(x) && !isNaN(x);
+};
+exports.isSafeNumber = isSafeNumber;
 const isFloat = (x) => (0, exports.isNumber)(x) && x.toString().includes('.');
 exports.isFloat = isFloat;
 const isString = (x) => typeof x === 'string';

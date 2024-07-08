@@ -1,6 +1,7 @@
 export declare const isFunction: (v?: any) => v is CallableFunction;
 export declare const isDate: (x: any) => x is Date;
 export declare const isNumber: (x: any) => x is number;
+export declare const isSafeNumber: (x: any) => x is number;
 export declare const isFloat: (x: any) => x is number;
 export declare const isString: (x: any) => x is string;
 export declare const isBoolean: (x: any) => x is boolean;

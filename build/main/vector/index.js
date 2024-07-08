@@ -5,6 +5,7 @@ const etc_1 = require("../utils/etc");
 const array_1 = require("../utils/array");
 const hash_1 = require("../utils/hash");
 const matrix_1 = require("../matrix");
+const is_1 = require("../utils/is");
 class Vector {
     constructor(x = 0, y = 0, z = 0, w = 0) {
         this._x = 0;
@@ -204,6 +205,10 @@ class Vector {
             case 4:
                 return [this.x, this.y, this.z, this.w];
         }
+    }
+    isSafe() {
+        const items = this.toArray();
+        return items.filter(it => (0, is_1.isSafeNumber)(it)).length >= items.length;
     }
 }
 exports.Vector = Vector;
