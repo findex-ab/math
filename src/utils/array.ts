@@ -1,4 +1,4 @@
-export const range = (n: number): number[] => (n <= 0 ? [] : Array.from(Array(n).keys()));
+export const range = (n: number): number[] => (n <= 0 ? [] : Array.from(Array(Math.floor(n)).keys()));
 
 export const shiftRight = <T = any>(
   arr: T[],
