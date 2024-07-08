@@ -1,4 +1,4 @@
-export const range = (n) => (n <= 0 ? [] : Array.from(Array(Math.floor(n)).keys()));
+export const range = (n) => ((n <= 0 || typeof n !== 'number' || isNaN(n) || !isFinite(n)) ? [] : Array.from(Array(Math.floor(n)).keys()));
 export const shiftRight = (arr, index, insert, replace = false) => {
     const copy = [...arr];
     if (!replace) {
