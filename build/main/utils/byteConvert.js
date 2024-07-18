@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.bytesToGB = exports.bytesToMB = exports.MBToGB = exports.KBToMB = exports.bytesToKB = void 0;
+const bytesToKB = (b) => b * 0.001;
+exports.bytesToKB = bytesToKB;
+const KBToMB = (kb) => kb * 0.001;
+exports.KBToMB = KBToMB;
+const MBToGB = (mb) => mb * 0.001;
+exports.MBToGB = MBToGB;
+const bytesToMB = (b) => (0, exports.KBToMB)((0, exports.bytesToKB)(b));
+exports.bytesToMB = bytesToMB;
+const bytesToGB = (b) => (0, exports.MBToGB)((0, exports.bytesToMB)(b));
+exports.bytesToGB = bytesToGB;
