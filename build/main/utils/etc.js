@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.remap = exports.fibonacci = exports.randomFloats = exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.average = exports.sum = void 0;
+exports.onCycle = exports.remap = exports.fibonacci = exports.randomFloats = exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.average = exports.sum = void 0;
 const array_1 = require("./array");
 const hash_1 = require("./hash");
 const sum = (arr) => arr.reduce((a, b) => a + b, 0);
@@ -100,3 +100,8 @@ const remap = (v, vFrom, vTo) => {
     return (0, exports.clamp)(vTo.min + (((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min)), vTo.min, vTo.max);
 };
 exports.remap = remap;
+const onCycle = (vFrom, vTo, nrSteps, transTime, frame, time) => {
+    const cycle = (time) % (nrSteps + transTime);
+    return (0, exports.lerp)(vFrom, vTo, (0, exports.smoothstep)(frame - transTime, frame + transTime, cycle));
+};
+exports.onCycle = onCycle;

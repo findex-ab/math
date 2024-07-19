@@ -77,3 +77,7 @@ export const remap = (v, vFrom, vTo) => {
         return clamp(v, vFrom.min, vFrom.max);
     return clamp(vTo.min + (((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min)), vTo.min, vTo.max);
 };
+export const onCycle = (vFrom, vTo, nrSteps, transTime, frame, time) => {
+    const cycle = (time) % (nrSteps + transTime);
+    return lerp(vFrom, vTo, smoothstep(frame - transTime, frame + transTime, cycle));
+};
