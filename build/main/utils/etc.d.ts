@@ -1,5 +1,6 @@
 export declare const sum: (arr: number[]) => number;
 export declare const average: (arr: number[]) => number;
+export declare const median: (numbers: number[]) => number;
 export declare const cantor: (k1: number, k2: number) => number;
 export declare const decant: (c: number) => [number, number];
 export declare const lerp: (vFrom: number, vTo: number, scale: number) => number;

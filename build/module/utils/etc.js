@@ -2,6 +2,18 @@ import { range } from './array';
 import { hashu32, randomFloat, toUint32 } from './hash';
 export const sum = (arr) => arr.reduce((a, b) => a + b, 0);
 export const average = (arr) => arr.length <= 0 ? 0 : sum(arr) / arr.length;
+export const median = (numbers) => {
+    if (numbers.length === 0) {
+        return 0;
+    }
+    const sortedNumbers = numbers.slice().sort((a, b) => a - b);
+    const middleIndex = Math.floor(sortedNumbers.length / 2);
+    if (sortedNumbers.length % 2 === 0)
+        return ((sortedNumbers[clamp(middleIndex - 1, 0, sortedNumbers.length - 1)] +
+            sortedNumbers[middleIndex]) /
+            2);
+    return sortedNumbers[middleIndex];
+};
 export const cantor = (k1, k2) => {
     return ((k1 + k2) * (k1 + k2 + 1)) / 2 + k2;
 };
@@ -75,9 +87,9 @@ export function* fibonacci() {
 export const remap = (v, vFrom, vTo) => {
     if (vFrom.min === vTo.min && vFrom.max === vTo.max)
         return clamp(v, vFrom.min, vFrom.max);
-    return clamp(vTo.min + (((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min)), vTo.min, vTo.max);
+    return clamp(vTo.min + ((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min), vTo.min, vTo.max);
 };
 export const onCycle = (vFrom, vTo, nrSteps, transTime, frame, time) => {
-    const cycle = (time) % (nrSteps + transTime);
+    const cycle = time % (nrSteps + transTime);
     return lerp(vFrom, vTo, smoothstep(frame - transTime, frame + transTime, cycle));
 };

@@ -1,12 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onCycle = exports.remap = exports.fibonacci = exports.randomFloats = exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.average = exports.sum = void 0;
+exports.onCycle = exports.remap = exports.fibonacci = exports.randomFloats = exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.median = exports.average = exports.sum = void 0;
 const array_1 = require("./array");
 const hash_1 = require("./hash");
 const sum = (arr) => arr.reduce((a, b) => a + b, 0);
 exports.sum = sum;
 const average = (arr) => arr.length <= 0 ? 0 : (0, exports.sum)(arr) / arr.length;
 exports.average = average;
+const median = (numbers) => {
+    if (numbers.length === 0) {
+        return 0;
+    }
+    const sortedNumbers = numbers.slice().sort((a, b) => a - b);
+    const middleIndex = Math.floor(sortedNumbers.length / 2);
+    if (sortedNumbers.length % 2 === 0)
+        return ((sortedNumbers[(0, exports.clamp)(middleIndex - 1, 0, sortedNumbers.length - 1)] +
+            sortedNumbers[middleIndex]) /
+            2);
+    return sortedNumbers[middleIndex];
+};
+exports.median = median;
 const cantor = (k1, k2) => {
     return ((k1 + k2) * (k1 + k2 + 1)) / 2 + k2;
 };
@@ -97,11 +110,11 @@ exports.fibonacci = fibonacci;
 const remap = (v, vFrom, vTo) => {
     if (vFrom.min === vTo.min && vFrom.max === vTo.max)
         return (0, exports.clamp)(v, vFrom.min, vFrom.max);
-    return (0, exports.clamp)(vTo.min + (((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min)), vTo.min, vTo.max);
+    return (0, exports.clamp)(vTo.min + ((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min), vTo.min, vTo.max);
 };
 exports.remap = remap;
 const onCycle = (vFrom, vTo, nrSteps, transTime, frame, time) => {
-    const cycle = (time) % (nrSteps + transTime);
+    const cycle = time % (nrSteps + transTime);
     return (0, exports.lerp)(vFrom, vTo, (0, exports.smoothstep)(frame - transTime, frame + transTime, cycle));
 };
 exports.onCycle = onCycle;
