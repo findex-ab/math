@@ -175,6 +175,13 @@ class Vector {
     cross(b) {
         return (0, exports.VEC3)(this.y * b.z - this.z * b.y, this.z * b.x - this.x * b.z, this.x * b.y - this.y * b.x);
     }
+    clampToBound(bound) {
+        const x = (0, etc_1.clamp)(this.x, bound.min.x, bound.max.x);
+        const y = (0, etc_1.clamp)(this.y, bound.min.y, bound.max.y);
+        const z = (0, etc_1.clamp)(this.z, bound.min.z, bound.max.z);
+        const w = (0, etc_1.clamp)(this.w, bound.min.w, bound.max.w);
+        return new Vector(x, y, z, w);
+    }
     str() {
         return `${this.x} ${this.y} ${this.z} ${this.w}`;
     }

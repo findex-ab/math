@@ -3,6 +3,7 @@ export type AABB = {
     min: Vector;
     max: Vector;
 };
+export declare const AABBToLocal: (bounds: AABB) => AABB;
 export declare const aabbUniform: (bounds: AABB) => {
     min: Vector;
     max: Vector;
@@ -25,3 +26,5 @@ export declare const pointVSAABB: (point: Vector, bounds: AABB) => boolean;
 export declare const getAABBPoints: (a: AABB) => Vector[];
 export declare const getAABBPoints3D: (aabb: AABB) => Vector[];
 export declare const aabbFromPoints: (points: Vector[]) => AABB;
+export declare const smoothAABBvsAABB: (a: AABB, b: AABB, epsilon?: number) => number;
+export declare const smoothPointvsAABB2D: (point: Vector, aabb: AABB) => number;

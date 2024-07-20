@@ -3,6 +3,7 @@ import { range } from '../utils/array';
 import { hexToUint32, nthByte } from '../utils/hash';
 import { Mat4, mat4MulV4 } from '../matrix';
 import { isSafeNumber } from '../utils/is';
+import { AABB } from '../aabb';
 
 export interface IVector {
   x: number;
@@ -229,6 +230,14 @@ export class Vector implements IVector {
       this.z * b.x - this.x * b.z,
       this.x * b.y - this.y * b.x,
     );
+  }
+
+  clampToBound(bound: AABB) {
+    const x = clamp(this.x, bound.min.x, bound.max.x);
+    const y = clamp(this.y, bound.min.y, bound.max.y);
+    const z = clamp(this.z, bound.min.z, bound.max.z);
+    const w = clamp(this.w, bound.min.w, bound.max.w);
+    return new Vector(x, y, z, w);
   }
 
   str(): string {

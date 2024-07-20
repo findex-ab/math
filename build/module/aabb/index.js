@@ -1,5 +1,13 @@
 import { INF } from "../constants";
+import { clamp } from "../utils/etc";
 import { VEC2, VEC3, VEC31, vector3_add, vector3_sub } from "../vector";
+export const AABBToLocal = (bounds) => {
+    const size = getAABBSize(bounds);
+    return {
+        min: VEC31(0),
+        max: size
+    };
+};
 export const aabbUniform = (bounds) => {
     const size = bounds.max.sub(bounds.min);
     const max = Math.max(...size.toArray());
@@ -165,4 +173,29 @@ export const aabbFromPoints = (points) => {
         max.z = Math.max(max.z, p.z);
     }
     return { min, max };
+};
+const getAABBVolume2D = (a) => {
+    return (a.max.x - a.min.x) * (a.max.y - a.min.y);
+};
+const getAABBIntersectionVolume2D = (a, b) => {
+    const x_overlap = Math.max(0, Math.min(a.max.x, b.max.x) - Math.max(a.min.x, b.min.x));
+    const y_overlap = Math.max(0, Math.min(a.max.y, b.max.y) - Math.max(a.min.y, b.min.y));
+    return x_overlap * y_overlap;
+};
+export const smoothAABBvsAABB = (a, b, epsilon = 0.00001) => {
+    const interVol = getAABBIntersectionVolume2D(a, b);
+    const minVol = Math.min(getAABBVolume2D(a), getAABBVolume2D(b));
+    if (Math.abs(minVol) <= epsilon)
+        return 0;
+    const f = interVol / minVol;
+    if (isNaN(f) || !isFinite(f))
+        return 1.0;
+    return f;
+};
+export const smoothPointvsAABB2D = (point, aabb) => {
+    const closestPoint = VEC2(clamp(point.x, aabb.min.x, aabb.max.x), clamp(point.y, aabb.min.y, aabb.max.y));
+    const center = aabb.min.add(aabb.max).scale(0.5);
+    const maxDistance = center.distance(aabb.min);
+    const pointDistance = point.distance(closestPoint);
+    return 1 - clamp(pointDistance / maxDistance, 0, 1);
 };

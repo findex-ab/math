@@ -1,8 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.aabbFromPoints = exports.getAABBPoints3D = exports.getAABBPoints = exports.pointVSAABB = exports.AABBvsAABB = exports.getAABBSize = exports.getAABBCenter = exports.aabbTranslate = exports.aabbCorrect = exports.aabbFromSize = exports.aabbSub = exports.aabbSlice2D = exports.aabbUniform = void 0;
+exports.smoothPointvsAABB2D = exports.smoothAABBvsAABB = exports.aabbFromPoints = exports.getAABBPoints3D = exports.getAABBPoints = exports.pointVSAABB = exports.AABBvsAABB = exports.getAABBSize = exports.getAABBCenter = exports.aabbTranslate = exports.aabbCorrect = exports.aabbFromSize = exports.aabbSub = exports.aabbSlice2D = exports.aabbUniform = exports.AABBToLocal = void 0;
 const constants_1 = require("../constants");
+const etc_1 = require("../utils/etc");
 const vector_1 = require("../vector");
+const AABBToLocal = (bounds) => {
+    const size = (0, exports.getAABBSize)(bounds);
+    return {
+        min: (0, vector_1.VEC31)(0),
+        max: size
+    };
+};
+exports.AABBToLocal = AABBToLocal;
 const aabbUniform = (bounds) => {
     const size = bounds.max.sub(bounds.min);
     const max = Math.max(...size.toArray());
@@ -182,3 +191,30 @@ const aabbFromPoints = (points) => {
     return { min, max };
 };
 exports.aabbFromPoints = aabbFromPoints;
+const getAABBVolume2D = (a) => {
+    return (a.max.x - a.min.x) * (a.max.y - a.min.y);
+};
+const getAABBIntersectionVolume2D = (a, b) => {
+    const x_overlap = Math.max(0, Math.min(a.max.x, b.max.x) - Math.max(a.min.x, b.min.x));
+    const y_overlap = Math.max(0, Math.min(a.max.y, b.max.y) - Math.max(a.min.y, b.min.y));
+    return x_overlap * y_overlap;
+};
+const smoothAABBvsAABB = (a, b, epsilon = 0.00001) => {
+    const interVol = getAABBIntersectionVolume2D(a, b);
+    const minVol = Math.min(getAABBVolume2D(a), getAABBVolume2D(b));
+    if (Math.abs(minVol) <= epsilon)
+        return 0;
+    const f = interVol / minVol;
+    if (isNaN(f) || !isFinite(f))
+        return 1.0;
+    return f;
+};
+exports.smoothAABBvsAABB = smoothAABBvsAABB;
+const smoothPointvsAABB2D = (point, aabb) => {
+    const closestPoint = (0, vector_1.VEC2)((0, etc_1.clamp)(point.x, aabb.min.x, aabb.max.x), (0, etc_1.clamp)(point.y, aabb.min.y, aabb.max.y));
+    const center = aabb.min.add(aabb.max).scale(0.5);
+    const maxDistance = center.distance(aabb.min);
+    const pointDistance = point.distance(closestPoint);
+    return 1 - (0, etc_1.clamp)(pointDistance / maxDistance, 0, 1);
+};
+exports.smoothPointvsAABB2D = smoothPointvsAABB2D;

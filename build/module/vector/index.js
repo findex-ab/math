@@ -168,6 +168,13 @@ export class Vector {
     cross(b) {
         return VEC3(this.y * b.z - this.z * b.y, this.z * b.x - this.x * b.z, this.x * b.y - this.y * b.x);
     }
+    clampToBound(bound) {
+        const x = clamp(this.x, bound.min.x, bound.max.x);
+        const y = clamp(this.y, bound.min.y, bound.max.y);
+        const z = clamp(this.z, bound.min.z, bound.max.z);
+        const w = clamp(this.w, bound.min.w, bound.max.w);
+        return new Vector(x, y, z, w);
+    }
     str() {
         return `${this.x} ${this.y} ${this.z} ${this.w}`;
     }

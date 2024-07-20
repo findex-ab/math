@@ -1,4 +1,5 @@
 import { Mat4 } from '../matrix';
+import { AABB } from '../aabb';
 export interface IVector {
     x: number;
     y: number;
@@ -52,6 +53,7 @@ export declare class Vector implements IVector {
     mag(): number;
     dot(b: Vector): number;
     cross(b: Vector): Vector;
+    clampToBound(bound: AABB): Vector;
     str(): string;
     toString(count?: number, separator?: string): string;
     at(index: number): number;
