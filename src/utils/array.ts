@@ -1,3 +1,5 @@
+import { hashu32_v1, toUint32 } from "./hash";
+
 export const range = (n: number): number[] => ((n <= 0 || typeof n !== 'number' || isNaN(n) || !isFinite(n)) ? [] : Array.from(Array(Math.floor(n)).keys()));
 
 export const shiftRight = <T = any>(
@@ -130,4 +132,18 @@ export const mostFrequent = <T = any>(arr: T[]): T => {
   }
 
   return most;
+}
+
+export const shuffle = <T = any>(arr: T[], seed: number = 5013.18138): T[] => {
+  if (arr.length <= 0) return arr;
+  const indices = range(arr.length).sort((a, b) => {
+    const x = hashu32_v1(a + seed);
+    seed = toUint32(seed + x);
+    const y = hashu32_v1(b + seed);
+    seed = toUint32(seed + y);
+    const z = (x / 0xFFFFFFFF) * 2.0 - 1.0;
+    const w = (y / 0xFFFFFFFF) * 2.0 - 1.0;
+    return z - w;
+  });
+  return indices.map(i => arr[i]);
 }

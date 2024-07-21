@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mostFrequent = exports.arrayCount = exports.join = exports.chunkify = exports.unique = exports.uniqueBy = exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
+exports.shuffle = exports.mostFrequent = exports.arrayCount = exports.join = exports.chunkify = exports.unique = exports.uniqueBy = exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
+const hash_1 = require("./hash");
 const range = (n) => ((n <= 0 || typeof n !== 'number' || isNaN(n) || !isFinite(n)) ? [] : Array.from(Array(Math.floor(n)).keys()));
 exports.range = range;
 const shiftRight = (arr, index, insert, replace = false) => {
@@ -107,3 +108,18 @@ const mostFrequent = (arr) => {
     return most;
 };
 exports.mostFrequent = mostFrequent;
+const shuffle = (arr, seed = 5013.18138) => {
+    if (arr.length <= 0)
+        return arr;
+    const indices = (0, exports.range)(arr.length).sort((a, b) => {
+        const x = (0, hash_1.hashu32_v1)(a + seed);
+        seed = (0, hash_1.toUint32)(seed + x);
+        const y = (0, hash_1.hashu32_v1)(b + seed);
+        seed = (0, hash_1.toUint32)(seed + y);
+        const z = (x / 0xFFFFFFFF) * 2.0 - 1.0;
+        const w = (y / 0xFFFFFFFF) * 2.0 - 1.0;
+        return z - w;
+    });
+    return indices.map(i => arr[i]);
+};
+exports.shuffle = shuffle;

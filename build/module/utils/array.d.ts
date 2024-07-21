@@ -11,3 +11,4 @@ export declare const join: <T>(array: T[], options: {
 }) => T[];
 export declare const arrayCount: <T = any>(arr: T[], item: T) => number;
 export declare const mostFrequent: <T = any>(arr: T[]) => T;
+export declare const shuffle: <T = any>(arr: T[], seed?: number) => T[];
