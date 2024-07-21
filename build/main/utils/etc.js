@@ -107,10 +107,11 @@ function* fibonacci() {
     }
 }
 exports.fibonacci = fibonacci;
-const remap = (v, vFrom, vTo) => {
-    if (vFrom.min === vTo.min && vFrom.max === vTo.max)
+const remap = (v, vFrom, vTo, epsilon = 0.000001) => {
+    const div = (vFrom.max - vFrom.min);
+    if ((vFrom.min === vTo.min && vFrom.max === vTo.max) || (Math.abs(div) <= epsilon))
         return (0, exports.clamp)(v, vFrom.min, vFrom.max);
-    return (0, exports.clamp)(vTo.min + ((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min), vTo.min, vTo.max);
+    return (0, exports.clamp)(vTo.min + ((v - vFrom.min) / div) * (vTo.max - vTo.min), vTo.min, vTo.max);
 };
 exports.remap = remap;
 const onCycle = (vFrom, vTo, nrSteps, transTime, frame, time) => {

@@ -30,5 +30,5 @@ export declare const remap: (v: number, vFrom: {
 }, vTo: {
     min: number;
     max: number;
-}) => number;
+}, epsilon?: number) => number;
 export declare const onCycle: (vFrom: number, vTo: number, nrSteps: number, transTime: number, frame: number, time: number) => number;

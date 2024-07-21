@@ -128,11 +128,15 @@ export const remap = (
   v: number,
   vFrom: { min: number; max: number },
   vTo: { min: number; max: number },
+  epsilon: number = 0.000001 
 ) => {
-  if (vFrom.min === vTo.min && vFrom.max === vTo.max)
+  const div = (vFrom.max - vFrom.min);
+  
+  if ((vFrom.min === vTo.min && vFrom.max === vTo.max) || (Math.abs(div) <= epsilon))
     return clamp(v, vFrom.min, vFrom.max);
+
   return clamp(
-    vTo.min + ((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min),
+    vTo.min + ((v - vFrom.min) / div) * (vTo.max - vTo.min),
     vTo.min,
     vTo.max,
   );

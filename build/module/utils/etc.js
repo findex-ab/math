@@ -84,10 +84,11 @@ export function* fibonacci() {
         [a, b] = [b, a + b];
     }
 }
-export const remap = (v, vFrom, vTo) => {
-    if (vFrom.min === vTo.min && vFrom.max === vTo.max)
+export const remap = (v, vFrom, vTo, epsilon = 0.000001) => {
+    const div = (vFrom.max - vFrom.min);
+    if ((vFrom.min === vTo.min && vFrom.max === vTo.max) || (Math.abs(div) <= epsilon))
         return clamp(v, vFrom.min, vFrom.max);
-    return clamp(vTo.min + ((v - vFrom.min) / (vFrom.max - vFrom.min)) * (vTo.max - vTo.min), vTo.min, vTo.max);
+    return clamp(vTo.min + ((v - vFrom.min) / div) * (vTo.max - vTo.min), vTo.min, vTo.max);
 };
 export const onCycle = (vFrom, vTo, nrSteps, transTime, frame, time) => {
     const cycle = time % (nrSteps + transTime);
