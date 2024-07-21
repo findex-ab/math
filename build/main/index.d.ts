@@ -5,6 +5,7 @@ export * from './utils/is';
 export * from './utils/string';
 export * from './utils/minkowski';
 export * from './utils/byteConvert';
+export * from './utils/mix';
 export * from './aabb';
 export * from './quadtree';
 export * from './matrix';

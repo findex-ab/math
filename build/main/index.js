@@ -21,6 +21,7 @@ __exportStar(require("./utils/is"), exports);
 __exportStar(require("./utils/string"), exports);
 __exportStar(require("./utils/minkowski"), exports);
 __exportStar(require("./utils/byteConvert"), exports);
+__exportStar(require("./utils/mix"), exports);
 __exportStar(require("./aabb"), exports);
 __exportStar(require("./quadtree"), exports);
 __exportStar(require("./matrix"), exports);
