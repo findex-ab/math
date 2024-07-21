@@ -157,3 +157,7 @@ export const onCycle = (
     smoothstep(frame - transTime, frame + transTime, cycle),
   );
 };
+
+export const enumerate = <T = any>(arr: T[]): Array<[number, T]> => {
+  return arr.length <= 0 ? [] : range(arr.length).map((i) => ([i, arr[i]]));
+}

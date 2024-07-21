@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onCycle = exports.remap = exports.fibonacci = exports.randomFloats = exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.median = exports.average = exports.sum = void 0;
+exports.enumerate = exports.onCycle = exports.remap = exports.fibonacci = exports.randomFloats = exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.median = exports.average = exports.sum = void 0;
 const array_1 = require("./array");
 const hash_1 = require("./hash");
 const sum = (arr) => arr.reduce((a, b) => a + b, 0);
@@ -119,3 +119,7 @@ const onCycle = (vFrom, vTo, nrSteps, transTime, frame, time) => {
     return (0, exports.lerp)(vFrom, vTo, (0, exports.smoothstep)(frame - transTime, frame + transTime, cycle));
 };
 exports.onCycle = onCycle;
+const enumerate = (arr) => {
+    return arr.length <= 0 ? [] : (0, array_1.range)(arr.length).map((i) => ([i, arr[i]]));
+};
+exports.enumerate = enumerate;

@@ -94,3 +94,6 @@ export const onCycle = (vFrom, vTo, nrSteps, transTime, frame, time) => {
     const cycle = time % (nrSteps + transTime);
     return lerp(vFrom, vTo, smoothstep(frame - transTime, frame + transTime, cycle));
 };
+export const enumerate = (arr) => {
+    return arr.length <= 0 ? [] : range(arr.length).map((i) => ([i, arr[i]]));
+};
