@@ -205,6 +205,9 @@ const hashGenerator = (cfg = {}) => {
         seed = (0, exports.hashu32_v1)((0, exports.hashu32_v1)(seed) + seed);
         return seed;
     };
-    return { next };
+    const nextNormal = () => {
+        return (0, exports.toUint32)(next()) / 0xFFFFFFFF;
+    };
+    return { next, nextNormal };
 };
 exports.hashGenerator = hashGenerator;

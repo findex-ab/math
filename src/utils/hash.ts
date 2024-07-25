@@ -243,6 +243,7 @@ export type HashGeneratorConfig = {
 
 export type HashGenerator = {
   next: () => number;
+  nextNormal: () => number;
 }
 
 export const hashGenerator = (cfg: HashGeneratorConfig = {}): HashGenerator => {
@@ -253,5 +254,9 @@ export const hashGenerator = (cfg: HashGeneratorConfig = {}): HashGenerator => {
     return seed;
   }
 
-  return { next };
+  const nextNormal = (): number => {
+    return toUint32(next()) / 0xFFFFFFFF;
+  }
+
+  return { next, nextNormal };
 }

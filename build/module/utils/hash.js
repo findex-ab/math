@@ -187,5 +187,8 @@ export const hashGenerator = (cfg = {}) => {
         seed = hashu32_v1(hashu32_v1(seed) + seed);
         return seed;
     };
-    return { next };
+    const nextNormal = () => {
+        return toUint32(next()) / 0xFFFFFFFF;
+    };
+    return { next, nextNormal };
 };

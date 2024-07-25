@@ -27,5 +27,6 @@ export type HashGeneratorConfig = {
 };
 export type HashGenerator = {
     next: () => number;
+    nextNormal: () => number;
 };
 export declare const hashGenerator: (cfg?: HashGeneratorConfig) => HashGenerator;
