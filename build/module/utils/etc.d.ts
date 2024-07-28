@@ -1,3 +1,5 @@
+export declare const sigmoid: (x: number) => number;
+export declare const sigmoidDer: (x: number) => number;
 export declare const sum: (arr: number[]) => number;
 export declare const average: (arr: number[]) => number;
 export declare const median: (numbers: number[]) => number;

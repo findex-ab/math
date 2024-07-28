@@ -1,11 +1,11 @@
-import { INF } from "../constants";
-import { clamp } from "../utils/etc";
-import { VEC2, VEC3, VEC31, vector3_add, vector3_sub } from "../vector";
+import { INF } from '../constants';
+import { clamp } from '../utils/etc';
+import { VEC2, VEC3, VEC31, vector3_add, vector3_sub } from '../vector';
 export const AABBToLocal = (bounds) => {
     const size = getAABBSize(bounds);
     return {
         min: VEC31(0),
-        max: size
+        max: size,
     };
 };
 export const aabbUniform = (bounds) => {
@@ -13,17 +13,30 @@ export const aabbUniform = (bounds) => {
     const max = Math.max(...size.toArray());
     return {
         min: bounds.min,
-        max: bounds.min.add(VEC31(max))
+        max: bounds.min.add(VEC31(max)),
+    };
+};
+export const aabbAddPoints = (bounds, points) => {
+    return aabbFromPoints([...points, bounds.min, bounds.max]);
+};
+export const aabbScale = (aabb, scalar) => {
+    const centerX = (aabb.min.x + aabb.max.x) / 2;
+    const centerY = (aabb.min.y + aabb.max.y) / 2;
+    const centerZ = (aabb.min.z + aabb.max.z) / 2;
+    const extentX = (aabb.max.x - aabb.min.x) / 2;
+    const extentY = (aabb.max.y - aabb.min.y) / 2;
+    const extentZ = (aabb.max.z - aabb.min.z) / 2;
+    const scaledExtentX = extentX * scalar;
+    const scaledExtentY = extentY * scalar;
+    const scaledExtentZ = extentZ * scalar;
+    return {
+        min: VEC3(centerX - scaledExtentX, centerY - scaledExtentY, centerZ - scaledExtentZ),
+        max: VEC3(centerX + scaledExtentX, centerY + scaledExtentY, centerZ + scaledExtentZ),
     };
 };
 export const aabbSlice2D = (bounds, epsilon = 0.0001) => {
     const out = [];
-    const layout = [
-        VEC3(0, 0, 0),
-        VEC3(0, 1, 0),
-        VEC3(1, 0, 0),
-        VEC3(1, 1, 0)
-    ];
+    const layout = [VEC3(0, 0, 0), VEC3(0, 1, 0), VEC3(1, 0, 0), VEC3(1, 1, 0)];
     const size = bounds.max.sub(bounds.min);
     const half = size.scale(0.5);
     const mid = bounds.min.add(half);
@@ -42,7 +55,7 @@ export const aabbSlice2D = (bounds, epsilon = 0.0001) => {
 export const aabbSub = (a, b) => {
     return {
         min: a.min.sub(b.min),
-        max: a.max.sub(b.max)
+        max: a.max.sub(b.max),
     };
 };
 export const aabbFromSize = (size) => {
@@ -66,7 +79,7 @@ export const aabbTranslate = (a, v) => {
     const max = a.max.add(v);
     return aabbCorrect({
         min,
-        max
+        max,
     });
 };
 export const getAABBCenter = (a) => {
@@ -84,6 +97,21 @@ export const AABBvsAABB = (a, b) => {
         return false;
     return true;
 };
+export const AABBvsAABB2D = (a, b) => {
+    if (a.max.x < b.min.x || a.min.x > b.max.x)
+        return false;
+    if (a.max.y < b.min.y || a.min.y > b.max.y)
+        return false;
+    return true;
+};
+export const AABBcontainsABB = (a, b) => {
+    return (a.min.x <= b.min.x &&
+        a.max.x >= b.max.x &&
+        a.min.y <= b.min.y &&
+        a.max.y >= b.max.y &&
+        a.min.z <= b.min.z &&
+        a.max.z >= b.max.z);
+};
 export const pointVSAABB = (point, bounds) => {
     if (point.x < bounds.min.x || point.x > bounds.max.x)
         return false;
@@ -96,7 +124,7 @@ export const getAABBPoints = (a) => {
         VEC2(a.min.x, a.min.y),
         VEC2(a.max.x, a.min.y),
         VEC2(a.max.x, a.max.y),
-        VEC2(a.min.x, a.max.y)
+        VEC2(a.min.x, a.max.y),
     ];
 };
 export const getAABBPoints3D = (aabb) => {

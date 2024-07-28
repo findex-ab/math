@@ -5,9 +5,16 @@ export type QuadTree = {
     bounds: AABB;
     children: QuadTree[];
     lines: Line[];
+    divided: boolean;
 };
-export declare const quadTreeFromLines: (lines: Line[]) => QuadTree;
-export declare const quadTreeSplit: (tree: QuadTree, depth?: number) => QuadTree;
+export type QuadTreeOptions = {
+    maxDepth?: number;
+    itemsPerNode?: number;
+    insertOnlyOneChild?: boolean;
+    minBoundSize?: number;
+};
+export declare const quadTreeFromLines: (lines: Line[], options?: QuadTreeOptions) => QuadTree;
+export declare const quadTreeInsertLine: (tree: QuadTree, line: Line, options?: QuadTreeOptions) => boolean;
 export declare const quadTreeFind: (tree: QuadTree, bound: AABB, depth?: number) => QuadTree | null;
-export declare const quadTreeFindLines: (tree: QuadTree, line: Line, depth?: number) => Line[];
+export declare const quadTreeFindLines: (tree: QuadTree, line: Line) => Line[];
 export {};

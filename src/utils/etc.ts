@@ -1,6 +1,9 @@
 import { range } from './array';
 import { hashu32, randomFloat, toUint32 } from './hash';
 
+export const sigmoid = (x: number) => 1 / (1 + Math.exp(-x));
+export const sigmoidDer = (x: number) => sigmoid(x) * (1 - sigmoid(x));
+
 export const sum = (arr: number[]): number => arr.reduce((a, b) => a + b, 0);
 
 export const average = (arr: number[]): number =>
