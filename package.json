@@ -1,6 +1,6 @@
 {
   "name": "math",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "description": "shared math",
   "bin": {
     "math": "./bin/math"

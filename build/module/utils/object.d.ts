@@ -6,6 +6,9 @@ export type ObjectDiff<T = unknown> = {
     oldValue: T;
     newValue: T;
 };
-export declare const getObjectDiffs: (oldObject: Dict, newObject: Dict, path?: string) => ObjectDiff[];
+export type ObjectDiffOptions = {
+    compareNonNullishOnly?: boolean;
+};
+export declare const getObjectDiffs: (oldObject: Dict, newObject: Dict, options?: ObjectDiffOptions) => ObjectDiff[];
 export declare const applyObjectDiffs: <T extends Dict<any>>(targetObject: T, diffs: ObjectDiff[], clone?: (obj: T) => T) => T;
 export {};

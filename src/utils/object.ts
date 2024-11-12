@@ -6,40 +6,56 @@ export type ObjectDiff<T = unknown> = {
   newValue: T;
 };
 
+export type ObjectDiffOptions = {
+  compareNonNullishOnly?: boolean
+}
+
 export const getObjectDiffs = (
   oldObject: Dict,
   newObject: Dict,
-  path: string = '',
+  options: ObjectDiffOptions = {}
 ): ObjectDiff[] => {
-  const diffs: ObjectDiff[] = [];
+  const getDiffs = (
+    oldObject: Dict,
+    newObject: Dict,
+    path: string = '',
+  ): ObjectDiff[] => {
+    const diffs: ObjectDiff[] = [];
 
-  const keys = new Set([
-    ...Object.keys(oldObject || {}),
-    ...Object.keys(newObject || {}),
-  ]);
+    const keys = new Set([
+      ...Object.keys(oldObject || {}),
+      ...Object.keys(newObject || {}),
+    ]);
 
-  for (const key of keys) {
-    const fullPath = path ? `${path}.${key}` : key;
-    const oldValue = oldObject ? oldObject[key] : undefined;
-    const newValue = newObject ? newObject[key] : undefined;
+    for (const key of keys) { 
+      const fullPath = path ? `${path}.${key}` : key;
+      const oldValue = oldObject ? oldObject[key] : undefined;
+      const newValue = newObject ? newObject[key] : undefined;
 
-    if (oldValue === newValue) {
-      continue;
+      if (options.compareNonNullishOnly) {
+        if (typeof newValue === 'undefined' || newValue === null) continue;
+      }
+
+      if (oldValue === newValue) {
+        continue;
+      }
+
+      if (
+        typeof oldValue === 'object' &&
+        oldValue !== null &&
+        typeof newValue === 'object' &&
+        newValue !== null
+      ) {
+        diffs.push(...getDiffs(oldValue, newValue, fullPath));
+      } else {
+        diffs.push({ path: fullPath, oldValue, newValue });
+      }
     }
 
-    if (
-      typeof oldValue === 'object' &&
-      oldValue !== null &&
-      typeof newValue === 'object' &&
-      newValue !== null
-    ) {
-      diffs.push(...getObjectDiffs(oldValue, newValue, fullPath));
-    } else {
-      diffs.push({ path: fullPath, oldValue, newValue });
-    }
-  }
+    return diffs;
+  };
 
-  return diffs;
+  return getDiffs(oldObject, newObject);
 };
 
 export const applyObjectDiffs = <T extends Dict>(
