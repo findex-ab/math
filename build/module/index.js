@@ -1,4 +1,5 @@
 export * from './utils/array';
+export * from './utils/object';
 export * from './utils/etc';
 export * from './utils/hash';
 export * from './utils/is';
