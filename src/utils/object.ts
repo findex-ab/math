@@ -7,7 +7,8 @@ export type ObjectDiff<T = unknown> = {
 };
 
 export type ObjectDiffOptions = {
-  compareNonNullishOnly?: boolean
+  compareNonNullishOnly?: boolean;
+  keyFilter?: (key: string) => boolean;
 }
 
 export const getObjectDiffs = (
@@ -27,7 +28,9 @@ export const getObjectDiffs = (
       ...Object.keys(newObject || {}),
     ]);
 
-    for (const key of keys) { 
+    for (const key of keys) {
+      if (options.keyFilter && options.keyFilter(key) !== true) continue;
+      
       const fullPath = path ? `${path}.${key}` : key;
       const oldValue = oldObject ? oldObject[key] : undefined;
       const newValue = newObject ? newObject[key] : undefined;

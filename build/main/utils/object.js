@@ -9,6 +9,8 @@ const getObjectDiffs = (oldObject, newObject, options = {}) => {
             ...Object.keys(newObject || {}),
         ]);
         for (const key of keys) {
+            if (options.keyFilter && options.keyFilter(key) !== true)
+                continue;
             const fullPath = path ? `${path}.${key}` : key;
             const oldValue = oldObject ? oldObject[key] : undefined;
             const newValue = newObject ? newObject[key] : undefined;
