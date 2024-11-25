@@ -51,6 +51,7 @@ export const uniqueBy = <T, KV = string>(
   key: string | ((item: T) => KV),
 ): T[] => {
   const nextArr: T[] = [];
+  const lookup = new Map<any, boolean>();
 
   try {
     const getId = (item: T, k: string | ((item: T) => KV)): any => {
@@ -58,9 +59,9 @@ export const uniqueBy = <T, KV = string>(
     };
     for (const item of arr) {
       const id = getId(item, key);
-      const count = nextArr.filter((it) => getId(it, key) === id).length;
-      if (count > 0) continue;
+      if (lookup.has(id)) continue;
       nextArr.push(item);
+      lookup.set(id, true);
     }
   } catch (e) {
     console.error('uniqueBy() failed.');

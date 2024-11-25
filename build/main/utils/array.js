@@ -36,16 +36,17 @@ const shiftLeft = (arr, index) => {
 exports.shiftLeft = shiftLeft;
 const uniqueBy = (arr, key) => {
     const nextArr = [];
+    const lookup = new Map();
     try {
         const getId = (item, k) => {
             return typeof k === 'string' ? item[k] : k(item);
         };
         for (const item of arr) {
             const id = getId(item, key);
-            const count = nextArr.filter((it) => getId(it, key) === id).length;
-            if (count > 0)
+            if (lookup.has(id))
                 continue;
             nextArr.push(item);
+            lookup.set(id, true);
         }
     }
     catch (e) {
