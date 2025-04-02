@@ -1,6 +1,9 @@
-import { hashu32_v1, toUint32 } from "./hash";
+import { hashu32_v1, toUint32 } from './hash';
 
-export const range = (n: number): number[] => ((n <= 0 || typeof n !== 'number' || isNaN(n) || !isFinite(n)) ? [] : Array.from(Array(Math.floor(n)).keys()));
+export const range = (n: number): number[] =>
+  n <= 0 || typeof n !== 'number' || isNaN(n) || !isFinite(n)
+    ? []
+    : Array.from(Array(Math.floor(n)).keys());
 
 export const shiftRight = <T = any>(
   arr: T[],
@@ -117,7 +120,7 @@ export const join = <T>(
 
 export const arrayCount = <T = any>(arr: T[], item: T): number => {
   return arr.filter((it) => it === item).length;
-}
+};
 
 export const mostFrequent = <T = any>(arr: T[]): T => {
   let most = arr[0];
@@ -133,7 +136,7 @@ export const mostFrequent = <T = any>(arr: T[]): T => {
   }
 
   return most;
-}
+};
 
 export const shuffle = <T = any>(arr: T[], seed: number = 5013.18138): T[] => {
   if (arr.length <= 0) return arr;
@@ -142,9 +145,41 @@ export const shuffle = <T = any>(arr: T[], seed: number = 5013.18138): T[] => {
     seed = toUint32(seed + x);
     const y = hashu32_v1(b + seed);
     seed = toUint32(seed + y);
-    const z = (x / 0xFFFFFFFF) * 2.0 - 1.0;
-    const w = (y / 0xFFFFFFFF) * 2.0 - 1.0;
+    const z = (x / 0xffffffff) * 2.0 - 1.0;
+    const w = (y / 0xffffffff) * 2.0 - 1.0;
     return z - w;
   });
-  return indices.map(i => arr[i]);
-}
+  return indices.map((i) => arr[i]);
+};
+
+export const zip = <S1, S2>(
+  firstCollection: Array<S1>,
+  lastCollection: Array<S2>,
+): Array<[S1, S2]> => {
+  const length = Math.min(firstCollection.length, lastCollection.length);
+  const zipped: Array<[S1, S2]> = [];
+
+  for (let index = 0; index < length; index++) {
+    zipped.push([firstCollection[index], lastCollection[index]]);
+  }
+
+  return zipped;
+};
+
+export const zipMax = <S1, S2>(
+  firstCollection: Array<S1>,
+  lastCollection: Array<S2>,
+  pad: [S1, S2],
+): Array<[S1, S2]> => {
+  const length = Math.max(firstCollection.length, lastCollection.length);
+  const zipped: Array<[S1, S2]> = [];
+
+  for (let index = 0; index < length; index++) {
+    zipped.push([
+      index >= firstCollection.length ? pad[0] : firstCollection[index],
+      index >= lastCollection.length ? pad[1] : lastCollection[index],
+    ]);
+  }
+
+  return zipped;
+};

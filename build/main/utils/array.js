@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shuffle = exports.mostFrequent = exports.arrayCount = exports.join = exports.chunkify = exports.unique = exports.uniqueBy = exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
+exports.zipMax = exports.zip = exports.shuffle = exports.mostFrequent = exports.arrayCount = exports.join = exports.chunkify = exports.unique = exports.uniqueBy = exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
 const hash_1 = require("./hash");
-const range = (n) => ((n <= 0 || typeof n !== 'number' || isNaN(n) || !isFinite(n)) ? [] : Array.from(Array(Math.floor(n)).keys()));
+const range = (n) => n <= 0 || typeof n !== 'number' || isNaN(n) || !isFinite(n)
+    ? []
+    : Array.from(Array(Math.floor(n)).keys());
 exports.range = range;
 const shiftRight = (arr, index, insert, replace = false) => {
     const copy = [...arr];
@@ -117,10 +119,31 @@ const shuffle = (arr, seed = 5013.18138) => {
         seed = (0, hash_1.toUint32)(seed + x);
         const y = (0, hash_1.hashu32_v1)(b + seed);
         seed = (0, hash_1.toUint32)(seed + y);
-        const z = (x / 0xFFFFFFFF) * 2.0 - 1.0;
-        const w = (y / 0xFFFFFFFF) * 2.0 - 1.0;
+        const z = (x / 0xffffffff) * 2.0 - 1.0;
+        const w = (y / 0xffffffff) * 2.0 - 1.0;
         return z - w;
     });
-    return indices.map(i => arr[i]);
+    return indices.map((i) => arr[i]);
 };
 exports.shuffle = shuffle;
+const zip = (firstCollection, lastCollection) => {
+    const length = Math.min(firstCollection.length, lastCollection.length);
+    const zipped = [];
+    for (let index = 0; index < length; index++) {
+        zipped.push([firstCollection[index], lastCollection[index]]);
+    }
+    return zipped;
+};
+exports.zip = zip;
+const zipMax = (firstCollection, lastCollection, pad) => {
+    const length = Math.max(firstCollection.length, lastCollection.length);
+    const zipped = [];
+    for (let index = 0; index < length; index++) {
+        zipped.push([
+            index >= firstCollection.length ? pad[0] : firstCollection[index],
+            index >= lastCollection.length ? pad[1] : lastCollection[index],
+        ]);
+    }
+    return zipped;
+};
+exports.zipMax = zipMax;

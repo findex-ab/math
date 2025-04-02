@@ -1,5 +1,7 @@
-import { hashu32_v1, toUint32 } from "./hash";
-export const range = (n) => ((n <= 0 || typeof n !== 'number' || isNaN(n) || !isFinite(n)) ? [] : Array.from(Array(Math.floor(n)).keys()));
+import { hashu32_v1, toUint32 } from './hash';
+export const range = (n) => n <= 0 || typeof n !== 'number' || isNaN(n) || !isFinite(n)
+    ? []
+    : Array.from(Array(Math.floor(n)).keys());
 export const shiftRight = (arr, index, insert, replace = false) => {
     const copy = [...arr];
     if (!replace) {
@@ -104,9 +106,28 @@ export const shuffle = (arr, seed = 5013.18138) => {
         seed = toUint32(seed + x);
         const y = hashu32_v1(b + seed);
         seed = toUint32(seed + y);
-        const z = (x / 0xFFFFFFFF) * 2.0 - 1.0;
-        const w = (y / 0xFFFFFFFF) * 2.0 - 1.0;
+        const z = (x / 0xffffffff) * 2.0 - 1.0;
+        const w = (y / 0xffffffff) * 2.0 - 1.0;
         return z - w;
     });
-    return indices.map(i => arr[i]);
+    return indices.map((i) => arr[i]);
+};
+export const zip = (firstCollection, lastCollection) => {
+    const length = Math.min(firstCollection.length, lastCollection.length);
+    const zipped = [];
+    for (let index = 0; index < length; index++) {
+        zipped.push([firstCollection[index], lastCollection[index]]);
+    }
+    return zipped;
+};
+export const zipMax = (firstCollection, lastCollection, pad) => {
+    const length = Math.max(firstCollection.length, lastCollection.length);
+    const zipped = [];
+    for (let index = 0; index < length; index++) {
+        zipped.push([
+            index >= firstCollection.length ? pad[0] : firstCollection[index],
+            index >= lastCollection.length ? pad[1] : lastCollection[index],
+        ]);
+    }
+    return zipped;
 };

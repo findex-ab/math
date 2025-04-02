@@ -12,3 +12,5 @@ export declare const join: <T>(array: T[], options: {
 export declare const arrayCount: <T = any>(arr: T[], item: T) => number;
 export declare const mostFrequent: <T = any>(arr: T[]) => T;
 export declare const shuffle: <T = any>(arr: T[], seed?: number) => T[];
+export declare const zip: <S1, S2>(firstCollection: Array<S1>, lastCollection: Array<S2>) => Array<[S1, S2]>;
+export declare const zipMax: <S1, S2>(firstCollection: Array<S1>, lastCollection: Array<S2>, pad: [S1, S2]) => Array<[S1, S2]>;
