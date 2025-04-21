@@ -21,3 +21,4 @@ export * from './intersection/polygon';
 export * from './mesh';
 export * from './physics';
 export * from './vector';
+export * from './word2vec';

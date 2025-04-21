@@ -37,3 +37,4 @@ __exportStar(require("./intersection/polygon"), exports);
 __exportStar(require("./mesh"), exports);
 __exportStar(require("./physics"), exports);
 __exportStar(require("./vector"), exports);
+__exportStar(require("./word2vec"), exports);
