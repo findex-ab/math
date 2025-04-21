@@ -1,5 +1,6 @@
-import { insertAt, range, shiftLeft, zipMax } from './array';
-import { clamp, sum } from './etc';
+import { getWordVectors } from '../word2vec';
+import { insertAt, range, shiftLeft, zip, zipMax } from './array';
+import { clamp, cosineDistance, sum } from './etc';
 
 export const stringInsertAt = (
   str: string,
@@ -197,11 +198,34 @@ export const naiveStringSimilarity = (a: string, b: string): number => {
   return Math.tanh(score);
 };
 
+
+export const cosineStringSimilarity = (a: string, b: string) => {
+  const vecsA = getWordVectors(a);
+  const vecsB = getWordVectors(b);
+
+  if (vecsA.length === 1 && vecsB.length === 1) {
+    return cosineDistance(vecsA[0], vecsB[0]);
+  }
+
+  if (vecsA.length === vecsB.length) {
+    const all = zip(vecsA, vecsB);
+    const tot = sum(all.map(([x, y]) => cosineDistance(x, y))) / Math.max(1, vecsA.length);
+    return tot;
+  }
+  
+  const count = vecsA.length * vecsB.length;
+  const dist1 = sum(vecsA.map((va) => sum(vecsB.map((vb) => cosineDistance(va, vb)))).flat()) / Math.max(1, count);
+  const dist2 = sum(vecsB.map((vb) => sum(vecsA.map((va) => cosineDistance(vb, va)))).flat()) / Math.max(1, count);
+  const dist = (dist1 + dist2) * 0.5;
+  return dist;
+}
+
 export type StringSimilarityOptions = {
   caseSensitive?: boolean; // Default: false
   naiveInfluence?: number;
   levenshteinInfluence?: number;
   jaroWinklerInfluence?: number;
+  cosineInfluence?: number;
 };
 
 export const stringSimilarity = (
@@ -210,9 +234,10 @@ export const stringSimilarity = (
   options: StringSimilarityOptions = {},
 ) => {
   const {
-    naiveInfluence = 1.0,
+    naiveInfluence = 0.25,
+    cosineInfluence = 0.0,
     levenshteinInfluence = 0.01,
-    jaroWinklerInfluence = 0.15,
+    jaroWinklerInfluence = 1.0 - 0.25,
     caseSensitive = false,
   } = options;
 
@@ -223,14 +248,16 @@ export const stringSimilarity = (
 
   const influence: number[] = [
     naiveInfluence,
+    cosineInfluence,
     levenshteinInfluence,
     jaroWinklerInfluence,
   ];
   const tot = sum(influence);
   const invTot = 1.0 / Math.max(0.000001, tot);
   const scales = influence.map((x) => x * invTot);
-  const naive = naiveStringSimilarity(a, b);
-  const lev = levenshteinSimilarity(a, b, options);
-  const jar = jaroWinklerSimilarity(a, b, options);
-  return sum([naive, lev, jar].map((x, i) => x * scales[i]));
+  const naive = naiveInfluence > 0.0 ? naiveStringSimilarity(a, b) : 0.0;
+  const cosine = cosineInfluence > 0.0 ? cosineStringSimilarity(a, b) : 0.0;
+  const lev = levenshteinInfluence > 0.0 ? levenshteinSimilarity(a, b, options) : 0.0;
+  const jar = jaroWinklerInfluence > 0.0 ? jaroWinklerSimilarity(a, b, options) : 0.0;
+  return sum([naive, cosine, lev, jar].map((x, i) => x * scales[i]));
 };

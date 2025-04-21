@@ -35,3 +35,4 @@ export declare const remap: (v: number, vFrom: {
 }, epsilon?: number) => number;
 export declare const onCycle: (vFrom: number, vTo: number, nrSteps: number, transTime: number, frame: number, time: number) => number;
 export declare const enumerate: <T = any>(arr: T[]) => Array<[number, T]>;
+export declare const cosineDistance: (a: number[], b: number[]) => number;

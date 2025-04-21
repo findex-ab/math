@@ -87,8 +87,9 @@ export function* fibonacci() {
     }
 }
 export const remap = (v, vFrom, vTo, epsilon = 0.000001) => {
-    const div = (vFrom.max - vFrom.min);
-    if ((vFrom.min === vTo.min && vFrom.max === vTo.max) || (Math.abs(div) <= epsilon))
+    const div = vFrom.max - vFrom.min;
+    if ((vFrom.min === vTo.min && vFrom.max === vTo.max) ||
+        Math.abs(div) <= epsilon)
         return clamp(v, vFrom.min, vFrom.max);
     return clamp(vTo.min + ((v - vFrom.min) / div) * (vTo.max - vTo.min), vTo.min, vTo.max);
 };
@@ -97,5 +98,16 @@ export const onCycle = (vFrom, vTo, nrSteps, transTime, frame, time) => {
     return lerp(vFrom, vTo, smoothstep(frame - transTime, frame + transTime, cycle));
 };
 export const enumerate = (arr) => {
-    return arr.length <= 0 ? [] : range(arr.length).map((i) => ([i, arr[i]]));
+    return arr.length <= 0 ? [] : range(arr.length).map((i) => [i, arr[i]]);
+};
+export const cosineDistance = (a, b) => {
+    let dot = 0;
+    let norm1 = 0;
+    let norm2 = 0;
+    for (let i = 0; i < a.length; i++) {
+        dot += a[i] * b[i];
+        norm1 += a[i] * a[i];
+        norm2 += b[i] * b[i];
+    }
+    return dot / (Math.sqrt(norm1) * Math.sqrt(norm2));
 };

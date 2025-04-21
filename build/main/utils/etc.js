@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.enumerate = exports.onCycle = exports.remap = exports.fibonacci = exports.randomFloats = exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.median = exports.average = exports.sum = exports.sigmoidDer = exports.sigmoid = void 0;
+exports.cosineDistance = exports.enumerate = exports.onCycle = exports.remap = exports.fibonacci = exports.randomFloats = exports.normalize = exports.magnitude = exports.mod = exports.signStr = exports.sign = exports.snap = exports.smax = exports.smin = exports.slt = exports.sgt = exports.smoothstep = exports.fract = exports.clamp = exports.lerp = exports.decant = exports.cantor = exports.median = exports.average = exports.sum = exports.sigmoidDer = exports.sigmoid = void 0;
 const array_1 = require("./array");
 const hash_1 = require("./hash");
 const sigmoid = (x) => 1 / (1 + Math.exp(-x));
@@ -112,8 +112,9 @@ function* fibonacci() {
 }
 exports.fibonacci = fibonacci;
 const remap = (v, vFrom, vTo, epsilon = 0.000001) => {
-    const div = (vFrom.max - vFrom.min);
-    if ((vFrom.min === vTo.min && vFrom.max === vTo.max) || (Math.abs(div) <= epsilon))
+    const div = vFrom.max - vFrom.min;
+    if ((vFrom.min === vTo.min && vFrom.max === vTo.max) ||
+        Math.abs(div) <= epsilon)
         return (0, exports.clamp)(v, vFrom.min, vFrom.max);
     return (0, exports.clamp)(vTo.min + ((v - vFrom.min) / div) * (vTo.max - vTo.min), vTo.min, vTo.max);
 };
@@ -124,6 +125,18 @@ const onCycle = (vFrom, vTo, nrSteps, transTime, frame, time) => {
 };
 exports.onCycle = onCycle;
 const enumerate = (arr) => {
-    return arr.length <= 0 ? [] : (0, array_1.range)(arr.length).map((i) => ([i, arr[i]]));
+    return arr.length <= 0 ? [] : (0, array_1.range)(arr.length).map((i) => [i, arr[i]]);
 };
 exports.enumerate = enumerate;
+const cosineDistance = (a, b) => {
+    let dot = 0;
+    let norm1 = 0;
+    let norm2 = 0;
+    for (let i = 0; i < a.length; i++) {
+        dot += a[i] * b[i];
+        norm1 += a[i] * a[i];
+        norm2 += b[i] * b[i];
+    }
+    return dot / (Math.sqrt(norm1) * Math.sqrt(norm2));
+};
+exports.cosineDistance = cosineDistance;

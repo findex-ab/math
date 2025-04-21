@@ -1,6 +1,6 @@
 {
   "name": "math",
-  "version": "2.3.9",
+  "version": "2.3.10",
   "description": "shared math",
   "bin": {
     "math": "./bin/math"
@@ -17,7 +17,7 @@
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "fix:lint": "eslint src --ext .ts --fix",
-    "test": "run-s build test:*",
+    "test": "npx tsx --test --experimental-test-module-mocks \"./src/**/*.test.ts\" --report-compact --no-warnings",
     "watch:build": "tsc -p tsconfig.json -w",
     "doc": "run-s doc:html && open-cli build/docs/index.html",
     "doc:html": "typedoc src/ --exclude **/*.spec.ts --target ES6 --mode file --out build/docs",

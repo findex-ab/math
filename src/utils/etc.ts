@@ -131,11 +131,14 @@ export const remap = (
   v: number,
   vFrom: { min: number; max: number },
   vTo: { min: number; max: number },
-  epsilon: number = 0.000001 
+  epsilon: number = 0.000001,
 ) => {
-  const div = (vFrom.max - vFrom.min);
-  
-  if ((vFrom.min === vTo.min && vFrom.max === vTo.max) || (Math.abs(div) <= epsilon))
+  const div = vFrom.max - vFrom.min;
+
+  if (
+    (vFrom.min === vTo.min && vFrom.max === vTo.max) ||
+    Math.abs(div) <= epsilon
+  )
     return clamp(v, vFrom.min, vFrom.max);
 
   return clamp(
@@ -162,5 +165,17 @@ export const onCycle = (
 };
 
 export const enumerate = <T = any>(arr: T[]): Array<[number, T]> => {
-  return arr.length <= 0 ? [] : range(arr.length).map((i) => ([i, arr[i]]));
-}
+  return arr.length <= 0 ? [] : range(arr.length).map((i) => [i, arr[i]]);
+};
+
+export const cosineDistance = (a: number[], b: number[]) => {
+  let dot = 0;
+  let norm1 = 0;
+  let norm2 = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    norm1 += a[i] * a[i];
+    norm2 += b[i] * b[i];
+  }
+  return dot / (Math.sqrt(norm1) * Math.sqrt(norm2));
+};

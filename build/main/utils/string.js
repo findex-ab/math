@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.stringSimilarity = exports.naiveStringSimilarity = exports.levenshteinSimilarity = exports.levDistNormalized = exports.levDist = exports.jaroWinklerSimilarity = exports.stringRemoveAt = exports.stringInsertAt = void 0;
+exports.stringSimilarity = exports.cosineStringSimilarity = exports.naiveStringSimilarity = exports.levenshteinSimilarity = exports.levDistNormalized = exports.levDist = exports.jaroWinklerSimilarity = exports.stringRemoveAt = exports.stringInsertAt = void 0;
+const word2vec_1 = require("../word2vec");
 const array_1 = require("./array");
 const etc_1 = require("./etc");
 const stringInsertAt = (str, index, substr) => {
@@ -161,23 +162,43 @@ const naiveStringSimilarity = (a, b) => {
     return Math.tanh(score);
 };
 exports.naiveStringSimilarity = naiveStringSimilarity;
+const cosineStringSimilarity = (a, b) => {
+    const vecsA = (0, word2vec_1.getWordVectors)(a);
+    const vecsB = (0, word2vec_1.getWordVectors)(b);
+    if (vecsA.length === 1 && vecsB.length === 1) {
+        return (0, etc_1.cosineDistance)(vecsA[0], vecsB[0]);
+    }
+    if (vecsA.length === vecsB.length) {
+        const all = (0, array_1.zip)(vecsA, vecsB);
+        const tot = (0, etc_1.sum)(all.map(([x, y]) => (0, etc_1.cosineDistance)(x, y))) / Math.max(1, vecsA.length);
+        return tot;
+    }
+    const count = vecsA.length * vecsB.length;
+    const dist1 = (0, etc_1.sum)(vecsA.map((va) => (0, etc_1.sum)(vecsB.map((vb) => (0, etc_1.cosineDistance)(va, vb)))).flat()) / Math.max(1, count);
+    const dist2 = (0, etc_1.sum)(vecsB.map((vb) => (0, etc_1.sum)(vecsA.map((va) => (0, etc_1.cosineDistance)(vb, va)))).flat()) / Math.max(1, count);
+    const dist = (dist1 + dist2) * 0.5;
+    return dist;
+};
+exports.cosineStringSimilarity = cosineStringSimilarity;
 const stringSimilarity = (a, b, options = {}) => {
-    const { naiveInfluence = 1.0, levenshteinInfluence = 0.01, jaroWinklerInfluence = 0.15, caseSensitive = false, } = options;
+    const { naiveInfluence = 0.25, cosineInfluence = 0.0, levenshteinInfluence = 0.01, jaroWinklerInfluence = 1.0 - 0.25, caseSensitive = false, } = options;
     if (!caseSensitive) {
         a = a.toLowerCase();
         b = b.toLowerCase();
     }
     const influence = [
         naiveInfluence,
+        cosineInfluence,
         levenshteinInfluence,
         jaroWinklerInfluence,
     ];
     const tot = (0, etc_1.sum)(influence);
     const invTot = 1.0 / Math.max(0.000001, tot);
     const scales = influence.map((x) => x * invTot);
-    const naive = (0, exports.naiveStringSimilarity)(a, b);
-    const lev = (0, exports.levenshteinSimilarity)(a, b, options);
-    const jar = (0, exports.jaroWinklerSimilarity)(a, b, options);
-    return (0, etc_1.sum)([naive, lev, jar].map((x, i) => x * scales[i]));
+    const naive = naiveInfluence > 0.0 ? (0, exports.naiveStringSimilarity)(a, b) : 0.0;
+    const cosine = cosineInfluence > 0.0 ? (0, exports.cosineStringSimilarity)(a, b) : 0.0;
+    const lev = levenshteinInfluence > 0.0 ? (0, exports.levenshteinSimilarity)(a, b, options) : 0.0;
+    const jar = jaroWinklerInfluence > 0.0 ? (0, exports.jaroWinklerSimilarity)(a, b, options) : 0.0;
+    return (0, etc_1.sum)([naive, cosine, lev, jar].map((x, i) => x * scales[i]));
 };
 exports.stringSimilarity = stringSimilarity;
