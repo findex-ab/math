@@ -1,6 +1,6 @@
 {
   "name": "math",
-  "version": "2.3.12",
+  "version": "2.3.13",
   "description": "shared math",
   "bin": {
     "math": "./bin/math"
@@ -32,8 +32,8 @@
   "files": [
     "build/main",
     "build/module",
+    "**/*.json",
     "!**/*.spec.*",
-    "!**/*.json",
     "README.md"
   ],
   "ava": {
