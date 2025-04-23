@@ -163,21 +163,24 @@ const naiveStringSimilarity = (a, b) => {
 };
 exports.naiveStringSimilarity = naiveStringSimilarity;
 const cosineStringSimilarity = (a, b, options = {}) => {
+    var _a;
     const vecsA = options.useGoogleWord2Vec ? (0, word2vec_1.getWordVectorsV2W)(a) : (0, word2vec_1.getWordVectors)(a);
     const vecsB = options.useGoogleWord2Vec ? (0, word2vec_1.getWordVectorsV2W)(b) : (0, word2vec_1.getWordVectors)(b);
+    if (vecsA.length <= 0 || vecsB.length <= 0)
+        return -1;
     if (vecsA.length === 1 && vecsB.length === 1) {
-        return (0, etc_1.cosineDistance)(vecsA[0], vecsB[0]);
+        return (_a = (0, etc_1.cosineDistance)(vecsA[0], vecsB[0])) !== null && _a !== void 0 ? _a : -1;
     }
     if (vecsA.length === vecsB.length) {
         const all = (0, array_1.zip)(vecsA, vecsB);
         const tot = (0, etc_1.sum)(all.map(([x, y]) => (0, etc_1.cosineDistance)(x, y))) / Math.max(1, vecsA.length);
-        return tot;
+        return tot !== null && tot !== void 0 ? tot : -1;
     }
     const count = vecsA.length * vecsB.length;
     const dist1 = (0, etc_1.sum)(vecsA.map((va) => (0, etc_1.sum)(vecsB.map((vb) => (0, etc_1.cosineDistance)(va, vb)))).flat()) / Math.max(1, count);
     const dist2 = (0, etc_1.sum)(vecsB.map((vb) => (0, etc_1.sum)(vecsA.map((va) => (0, etc_1.cosineDistance)(vb, va)))).flat()) / Math.max(1, count);
     const dist = (dist1 + dist2) * 0.5;
-    return dist;
+    return dist !== null && dist !== void 0 ? dist : -1;
 };
 exports.cosineStringSimilarity = cosineStringSimilarity;
 const stringSimilarity = (a, b, options = {}) => {

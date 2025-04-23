@@ -33,4 +33,29 @@ const string_1 = require("./string");
         });
         (0, node_assert_1.default)(sim > 0.0);
     });
+    await (0, node_test_1.it)("google word 2 vec works (cosine)", () => {
+        const words = [
+            'hello',
+            'microsoft',
+            'fun',
+            'funny',
+            'car',
+            'volvo',
+            'doctor',
+            'program',
+            'application',
+            'Microsoft',
+            'Car',
+            'Hennes & Mauritz',
+            "software",
+            "Software"
+        ];
+        for (const word of words) {
+            const scored = words.filter(it => it !== word).map(it => ({
+                word: it,
+                score: (0, string_1.cosineStringSimilarity)(word, it, { useGoogleWord2Vec: true })
+            })).sort((a, b) => b.score - a.score);
+            console.log(word, JSON.stringify(scored, undefined, 2));
+        }
+    });
 });

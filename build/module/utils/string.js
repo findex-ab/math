@@ -155,19 +155,21 @@ export const naiveStringSimilarity = (a, b) => {
 export const cosineStringSimilarity = (a, b, options = {}) => {
     const vecsA = options.useGoogleWord2Vec ? getWordVectorsV2W(a) : getWordVectors(a);
     const vecsB = options.useGoogleWord2Vec ? getWordVectorsV2W(b) : getWordVectors(b);
+    if (vecsA.length <= 0 || vecsB.length <= 0)
+        return -1;
     if (vecsA.length === 1 && vecsB.length === 1) {
-        return cosineDistance(vecsA[0], vecsB[0]);
+        return cosineDistance(vecsA[0], vecsB[0]) ?? -1;
     }
     if (vecsA.length === vecsB.length) {
         const all = zip(vecsA, vecsB);
         const tot = sum(all.map(([x, y]) => cosineDistance(x, y))) / Math.max(1, vecsA.length);
-        return tot;
+        return tot ?? -1;
     }
     const count = vecsA.length * vecsB.length;
     const dist1 = sum(vecsA.map((va) => sum(vecsB.map((vb) => cosineDistance(va, vb)))).flat()) / Math.max(1, count);
     const dist2 = sum(vecsB.map((vb) => sum(vecsA.map((va) => cosineDistance(vb, va)))).flat()) / Math.max(1, count);
     const dist = (dist1 + dist2) * 0.5;
-    return dist;
+    return dist ?? -1;
 };
 export const stringSimilarity = (a, b, options = {}) => {
     const { naiveInfluence = 0.25, cosineInfluence = 0.0, levenshteinInfluence = 0.01, jaroWinklerInfluence = 1.0 - 0.25, caseSensitive = false, } = options;

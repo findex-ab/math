@@ -73,14 +73,15 @@ const getWordVectorsV2W = (content) => {
         return [vecs[leftLower]];
     if (vecs[rightLower])
         return [vecs[rightLower]];
-    const pairs = (0, array_1.chunkify)(Array.from(lower), 2);
-    return pairs.map(([a, b]) => {
-        const v = vecs[`${a}${b}`];
-        if (v && v.length > 0)
-            return [v];
-        const vecsA = (0, exports.getWordVectorsV2W)(a);
-        const vecsB = (0, exports.getWordVectorsV2W)(b);
-        return [...vecsA, ...vecsB];
-    }).flat();
+    if (content.includes(' ')) {
+        const parts = content.split(' ');
+        return parts.map((part) => {
+            return vecs[part] || [];
+        }).filter(it => it.length > 0);
+    }
+    const pairs = (0, array_1.chunkify)(Array.from(lower), 2).map(it => it.join(''));
+    return pairs.map((pair) => {
+        return vecs[pair] || [];
+    }).filter(it => it.length > 0);
 };
 exports.getWordVectorsV2W = getWordVectorsV2W;
