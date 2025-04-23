@@ -162,9 +162,9 @@ const naiveStringSimilarity = (a, b) => {
     return Math.tanh(score);
 };
 exports.naiveStringSimilarity = naiveStringSimilarity;
-const cosineStringSimilarity = (a, b) => {
-    const vecsA = (0, word2vec_1.getWordVectors)(a);
-    const vecsB = (0, word2vec_1.getWordVectors)(b);
+const cosineStringSimilarity = (a, b, options = {}) => {
+    const vecsA = options.useGoogleWord2Vec ? (0, word2vec_1.getWordVectorsV2W)(a) : (0, word2vec_1.getWordVectors)(a);
+    const vecsB = options.useGoogleWord2Vec ? (0, word2vec_1.getWordVectorsV2W)(b) : (0, word2vec_1.getWordVectors)(b);
     if (vecsA.length === 1 && vecsB.length === 1) {
         return (0, etc_1.cosineDistance)(vecsA[0], vecsB[0]);
     }
@@ -196,7 +196,7 @@ const stringSimilarity = (a, b, options = {}) => {
     const invTot = 1.0 / Math.max(0.000001, tot);
     const scales = influence.map((x) => x * invTot);
     const naive = naiveInfluence > 0.0 ? (0, exports.naiveStringSimilarity)(a, b) : 0.0;
-    const cosine = cosineInfluence > 0.0 ? (0, exports.cosineStringSimilarity)(a, b) : 0.0;
+    const cosine = cosineInfluence > 0.0 ? (0, exports.cosineStringSimilarity)(a, b, options.cosineOptions) : 0.0;
     const lev = levenshteinInfluence > 0.0 ? (0, exports.levenshteinSimilarity)(a, b, options) : 0.0;
     const jar = jaroWinklerInfluence > 0.0 ? (0, exports.jaroWinklerSimilarity)(a, b, options) : 0.0;
     return (0, etc_1.sum)([naive, cosine, lev, jar].map((x, i) => x * scales[i]));

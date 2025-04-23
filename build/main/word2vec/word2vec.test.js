@@ -19,4 +19,9 @@ const node_assert_1 = __importDefault(require("node:assert"));
         (0, node_assert_1.default)(vecs.length > 0);
     }
     ;
+    {
+        const vecs = (0, _1.getWordVectorsV2W)("cash");
+        (0, node_assert_1.default)(vecs.length > 0);
+    }
+    ;
 });

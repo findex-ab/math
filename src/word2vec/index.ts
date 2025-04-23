@@ -1,5 +1,6 @@
 import merges from '../data/merges.json';
 import vectors from '../data/vectors.json';
+import w2v from '../data/w2v.json';
 import idLists  from '../data/vectors.json';
 import { chunkify } from '../utils/array';
 
@@ -36,4 +37,41 @@ export const getWordVectors = (content: string) => {
   }).filter(it => !!it && it.length > 0)
 
   return idVectors;
+}
+
+export const getWordVectorsV2W = (content: string): Array<number[]> => {
+  if (!content) return [];
+  if (content.length <= 0) return [];
+  const lower = content.toLowerCase();
+  const vecs = w2v as Record<string, number[]>;
+
+  if (vecs[content]) return [vecs[content]];
+  if (vecs[lower]) return [vecs[lower]];
+
+  const half = Math.round(content.length / 2);
+  const left = content.slice(0, half);
+  const right = content.slice(half, content.length);
+  if (vecs[left] && vecs[right]) {
+    return [vecs[left], vecs[right]];
+  }
+  if (vecs[left]) return [vecs[left]];
+  if (vecs[right]) return [vecs[right]];
+
+  const leftLower = content.slice(0, half).toLowerCase();
+  const rightLower = content.slice(half, content.length).toLowerCase();
+  if (vecs[leftLower] && vecs[rightLower]) {
+    return [vecs[leftLower], vecs[rightLower]];
+  }
+  if (vecs[leftLower]) return [vecs[leftLower]];
+  if (vecs[rightLower]) return [vecs[rightLower]];
+
+  const pairs = chunkify(Array.from(lower), 2);
+
+  return pairs.map(([a, b]) => {
+    const v = vecs[`${a}${b}`];
+    if (v && v.length > 0) return [v];
+    const vecsA = getWordVectorsV2W(a);
+    const vecsB = getWordVectorsV2W(b);
+    return [...vecsA, ...vecsB];
+  }).flat()
 }

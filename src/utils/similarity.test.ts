@@ -23,4 +23,13 @@ test("String similarity", async () => {
     const sim = stringSimilarity(a, b, { naiveInfluence: 0.0, cosineInfluence: 0.5, jaroWinklerInfluence: 0.5 });
     assert(sim < 0.5);
   });
+
+  await it("google word 2 vec works (cosine)", () => {
+    const a = "money";
+    const b = "can";
+    const sim = cosineStringSimilarity(a, b, {
+      useGoogleWord2Vec: true,
+    });
+    assert(sim > 0.0);
+  });
 })

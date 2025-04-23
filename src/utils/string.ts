@@ -1,4 +1,4 @@
-import { getWordVectors } from '../word2vec';
+import { getWordVectors, getWordVectorsV2W } from '../word2vec';
 import { insertAt, range, shiftLeft, zip, zipMax } from './array';
 import { clamp, cosineDistance, sum } from './etc';
 
@@ -199,9 +199,13 @@ export const naiveStringSimilarity = (a: string, b: string): number => {
 };
 
 
-export const cosineStringSimilarity = (a: string, b: string) => {
-  const vecsA = getWordVectors(a);
-  const vecsB = getWordVectors(b);
+export type CosineStringSimilarityOptions = {
+  useGoogleWord2Vec?: boolean;
+}
+
+export const cosineStringSimilarity = (a: string, b: string, options: CosineStringSimilarityOptions = {}) => {
+  const vecsA = options.useGoogleWord2Vec ? getWordVectorsV2W(a) : getWordVectors(a);
+  const vecsB = options.useGoogleWord2Vec ? getWordVectorsV2W(b) : getWordVectors(b);
 
   if (vecsA.length === 1 && vecsB.length === 1) {
     return cosineDistance(vecsA[0], vecsB[0]);
@@ -226,6 +230,7 @@ export type StringSimilarityOptions = {
   levenshteinInfluence?: number;
   jaroWinklerInfluence?: number;
   cosineInfluence?: number;
+  cosineOptions?: CosineStringSimilarityOptions;
 };
 
 export const stringSimilarity = (
@@ -256,7 +261,7 @@ export const stringSimilarity = (
   const invTot = 1.0 / Math.max(0.000001, tot);
   const scales = influence.map((x) => x * invTot);
   const naive = naiveInfluence > 0.0 ? naiveStringSimilarity(a, b) : 0.0;
-  const cosine = cosineInfluence > 0.0 ? cosineStringSimilarity(a, b) : 0.0;
+  const cosine = cosineInfluence > 0.0 ? cosineStringSimilarity(a, b, options.cosineOptions) : 0.0;
   const lev = levenshteinInfluence > 0.0 ? levenshteinSimilarity(a, b, options) : 0.0;
   const jar = jaroWinklerInfluence > 0.0 ? jaroWinklerSimilarity(a, b, options) : 0.0;
   return sum([naive, cosine, lev, jar].map((x, i) => x * scales[i]));

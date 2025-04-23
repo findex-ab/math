@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWordVectors = void 0;
+exports.getWordVectorsV2W = exports.getWordVectors = void 0;
 const merges_json_1 = __importDefault(require("../data/merges.json"));
 const vectors_json_1 = __importDefault(require("../data/vectors.json"));
+const w2v_json_1 = __importDefault(require("../data/w2v.json"));
 const vectors_json_2 = __importDefault(require("../data/vectors.json"));
 const array_1 = require("../utils/array");
 const idLookup = vectors_json_2.default;
@@ -42,3 +43,44 @@ const getWordVectors = (content) => {
     return idVectors;
 };
 exports.getWordVectors = getWordVectors;
+const getWordVectorsV2W = (content) => {
+    if (!content)
+        return [];
+    if (content.length <= 0)
+        return [];
+    const lower = content.toLowerCase();
+    const vecs = w2v_json_1.default;
+    if (vecs[content])
+        return [vecs[content]];
+    if (vecs[lower])
+        return [vecs[lower]];
+    const half = Math.round(content.length / 2);
+    const left = content.slice(0, half);
+    const right = content.slice(half, content.length);
+    if (vecs[left] && vecs[right]) {
+        return [vecs[left], vecs[right]];
+    }
+    if (vecs[left])
+        return [vecs[left]];
+    if (vecs[right])
+        return [vecs[right]];
+    const leftLower = content.slice(0, half).toLowerCase();
+    const rightLower = content.slice(half, content.length).toLowerCase();
+    if (vecs[leftLower] && vecs[rightLower]) {
+        return [vecs[leftLower], vecs[rightLower]];
+    }
+    if (vecs[leftLower])
+        return [vecs[leftLower]];
+    if (vecs[rightLower])
+        return [vecs[rightLower]];
+    const pairs = (0, array_1.chunkify)(Array.from(lower), 2);
+    return pairs.map(([a, b]) => {
+        const v = vecs[`${a}${b}`];
+        if (v && v.length > 0)
+            return [v];
+        const vecsA = (0, exports.getWordVectorsV2W)(a);
+        const vecsB = (0, exports.getWordVectorsV2W)(b);
+        return [...vecsA, ...vecsB];
+    }).flat();
+};
+exports.getWordVectorsV2W = getWordVectorsV2W;

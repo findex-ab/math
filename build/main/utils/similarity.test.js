@@ -25,4 +25,12 @@ const string_1 = require("./string");
         const sim = (0, string_1.stringSimilarity)(a, b, { naiveInfluence: 0.0, cosineInfluence: 0.5, jaroWinklerInfluence: 0.5 });
         (0, node_assert_1.default)(sim < 0.5);
     });
+    await (0, node_test_1.it)("google word 2 vec works (cosine)", () => {
+        const a = "money";
+        const b = "can";
+        const sim = (0, string_1.cosineStringSimilarity)(a, b, {
+            useGoogleWord2Vec: true,
+        });
+        (0, node_assert_1.default)(sim > 0.0);
+    });
 });
