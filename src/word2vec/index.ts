@@ -1,6 +1,5 @@
 import merges from '../data/merges.json';
 import vectors from '../data/vectors.json';
-import w2v from '../data/w2v.json';
 import idLists  from '../data/vectors.json';
 import { chunkify } from '../utils/array';
 
@@ -39,11 +38,10 @@ export const getWordVectors = (content: string) => {
   return idVectors;
 }
 
-export const getWordVectorsV2W = (content: string): Array<number[]> => {
+export const getWordVectorsCustom = (content: string, vecs: Record<string, number[]>): Array<number[]> => {
   if (!content) return [];
   if (content.length <= 0) return [];
   const lower = content.toLowerCase();
-  const vecs = w2v as Record<string, number[]>;
 
   if (vecs[content]) return [vecs[content]];
   if (vecs[lower]) return [vecs[lower]];

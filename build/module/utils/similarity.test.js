@@ -21,14 +21,6 @@ test("String similarity", async () => {
         assert(sim < 0.5);
     });
     await it("google word 2 vec works (cosine)", () => {
-        const a = "money";
-        const b = "can";
-        const sim = cosineStringSimilarity(a, b, {
-            useGoogleWord2Vec: true,
-        });
-        assert(sim > 0.0);
-    });
-    await it("google word 2 vec works (cosine)", () => {
         const words = [
             'hello',
             'microsoft',
@@ -43,14 +35,64 @@ test("String similarity", async () => {
             'Car',
             'Hennes & Mauritz',
             "software",
-            "Software"
-        ];
+            "Software",
+            "color",
+            "red",
+            "green",
+            "blue",
+            "colour",
+            "fish",
+            "news",
+            "article",
+            "terms",
+            "number",
+            "math",
+            "calculator",
+            "calculate",
+            "image",
+            "picture",
+            "photo",
+            "tesla",
+            "vehicle",
+            "legal",
+            "computer",
+            "icon",
+            "logo",
+            "brand",
+            "watch",
+            "rolex",
+            "clock",
+            "logic",
+            "pay",
+            "payment",
+            "payments",
+            "money",
+            "price",
+            "cost",
+            "cash",
+            "beauty",
+            "beautiful",
+            "makeup",
+            "boy",
+            "girl",
+            "woman",
+            "man",
+            "he",
+            "she",
+            "they",
+            "them",
+            "investment",
+            "invested",
+            "invest",
+            "investing",
+            "video"
+        ].sort(() => Math.random() - Math.random());
         for (const word of words) {
             const scored = words.filter(it => it !== word).map(it => ({
                 word: it,
-                score: cosineStringSimilarity(word, it, { useGoogleWord2Vec: true })
+                score: cosineStringSimilarity(word, it, {})
             })).sort((a, b) => b.score - a.score);
-            console.log(word, JSON.stringify(scored, undefined, 2));
+            console.log(word, JSON.stringify(scored.slice(0, 3), undefined, 2));
         }
     });
 });

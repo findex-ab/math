@@ -26,15 +26,6 @@ test("String similarity", async () => {
   });
 
   await it("google word 2 vec works (cosine)", () => {
-    const a = "money";
-    const b = "can";
-    const sim = cosineStringSimilarity(a, b, {
-      useGoogleWord2Vec: true,
-    });
-    assert(sim > 0.0);
-  });
-
-  await it("google word 2 vec works (cosine)", () => {
     const words = [
       'hello',
       'microsoft',
@@ -105,7 +96,7 @@ test("String similarity", async () => {
     for (const word of words) {
       const scored = words.filter(it => it !== word).map(it => ({
         word: it,
-        score: cosineStringSimilarity(word, it, { useGoogleWord2Vec: true })
+        score: cosineStringSimilarity(word, it, { })
       })).sort((a, b) => b.score - a.score);
 
       console.log(word, JSON.stringify(scored.slice(0, 3), undefined, 2));

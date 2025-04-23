@@ -164,8 +164,8 @@ const naiveStringSimilarity = (a, b) => {
 exports.naiveStringSimilarity = naiveStringSimilarity;
 const cosineStringSimilarity = (a, b, options = {}) => {
     var _a;
-    const vecsA = options.useGoogleWord2Vec ? (0, word2vec_1.getWordVectorsV2W)(a) : (0, word2vec_1.getWordVectors)(a);
-    const vecsB = options.useGoogleWord2Vec ? (0, word2vec_1.getWordVectorsV2W)(b) : (0, word2vec_1.getWordVectors)(b);
+    const vecsA = options.customVectors ? (0, word2vec_1.getWordVectorsCustom)(a, options.customVectors) : (0, word2vec_1.getWordVectors)(a);
+    const vecsB = options.customVectors ? (0, word2vec_1.getWordVectorsCustom)(b, options.customVectors) : (0, word2vec_1.getWordVectors)(b);
     if (vecsA.length <= 0 || vecsB.length <= 0)
         return -1;
     if (vecsA.length === 1 && vecsB.length === 1) {

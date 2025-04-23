@@ -3,10 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWordVectorsV2W = exports.getWordVectors = void 0;
+exports.getWordVectorsCustom = exports.getWordVectors = void 0;
 const merges_json_1 = __importDefault(require("../data/merges.json"));
 const vectors_json_1 = __importDefault(require("../data/vectors.json"));
-const w2v_json_1 = __importDefault(require("../data/w2v.json"));
 const vectors_json_2 = __importDefault(require("../data/vectors.json"));
 const array_1 = require("../utils/array");
 const idLookup = vectors_json_2.default;
@@ -43,13 +42,12 @@ const getWordVectors = (content) => {
     return idVectors;
 };
 exports.getWordVectors = getWordVectors;
-const getWordVectorsV2W = (content) => {
+const getWordVectorsCustom = (content, vecs) => {
     if (!content)
         return [];
     if (content.length <= 0)
         return [];
     const lower = content.toLowerCase();
-    const vecs = w2v_json_1.default;
     if (vecs[content])
         return [vecs[content]];
     if (vecs[lower])
@@ -84,4 +82,4 @@ const getWordVectorsV2W = (content) => {
         return vecs[pair] || [];
     }).filter(it => it.length > 0);
 };
-exports.getWordVectorsV2W = getWordVectorsV2W;
+exports.getWordVectorsCustom = getWordVectorsCustom;

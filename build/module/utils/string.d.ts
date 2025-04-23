@@ -14,7 +14,7 @@ export type LevenshteinSimiliarityOptions = {
 export declare const levenshteinSimilarity: (a: string, b: string, options?: LevenshteinSimiliarityOptions) => number;
 export declare const naiveStringSimilarity: (a: string, b: string) => number;
 export type CosineStringSimilarityOptions = {
-    useGoogleWord2Vec?: boolean;
+    customVectors?: Record<string, number[]>;
 };
 export declare const cosineStringSimilarity: (a: string, b: string, options?: CosineStringSimilarityOptions) => number;
 export type StringSimilarityOptions = {

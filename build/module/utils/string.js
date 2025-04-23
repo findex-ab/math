@@ -1,4 +1,4 @@
-import { getWordVectors, getWordVectorsV2W } from '../word2vec';
+import { getWordVectors, getWordVectorsCustom } from '../word2vec';
 import { insertAt, range, shiftLeft, zip, zipMax } from './array';
 import { clamp, cosineDistance, sum } from './etc';
 export const stringInsertAt = (str, index, substr) => {
@@ -153,8 +153,8 @@ export const naiveStringSimilarity = (a, b) => {
     return Math.tanh(score);
 };
 export const cosineStringSimilarity = (a, b, options = {}) => {
-    const vecsA = options.useGoogleWord2Vec ? getWordVectorsV2W(a) : getWordVectors(a);
-    const vecsB = options.useGoogleWord2Vec ? getWordVectorsV2W(b) : getWordVectors(b);
+    const vecsA = options.customVectors ? getWordVectorsCustom(a, options.customVectors) : getWordVectors(a);
+    const vecsB = options.customVectors ? getWordVectorsCustom(b, options.customVectors) : getWordVectors(b);
     if (vecsA.length <= 0 || vecsB.length <= 0)
         return -1;
     if (vecsA.length === 1 && vecsB.length === 1) {
