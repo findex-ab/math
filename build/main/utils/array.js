@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.zipMax = exports.zip = exports.shuffle = exports.mostFrequent = exports.arrayCount = exports.join = exports.chunkify = exports.unique = exports.uniqueBy = exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
+exports.zipMax = exports.zip = exports.shuffleFast = exports.shuffle = exports.mostFrequent = exports.arrayCount = exports.join = exports.chunkify = exports.unique = exports.uniqueBy = exports.shiftLeft = exports.insertAt = exports.shiftRight = exports.range = void 0;
+const etc_1 = require("./etc");
 const hash_1 = require("./hash");
 const range = (n) => n <= 0 || typeof n !== 'number' || isNaN(n) || !isFinite(n)
     ? []
@@ -126,6 +127,19 @@ const shuffle = (arr, seed = 5013.18138) => {
     return indices.map((i) => arr[i]);
 };
 exports.shuffle = shuffle;
+const shuffleFast = (array, random = () => Math.random()) => {
+    const copy = [...array];
+    let currentIndex = copy.length;
+    while (currentIndex != 0) {
+        let randomIndex = Math.floor((0, etc_1.clamp)(random(currentIndex), 0.0, 1.0) * currentIndex);
+        currentIndex--;
+        [copy[currentIndex], copy[randomIndex]] = [
+            copy[randomIndex], copy[currentIndex]
+        ];
+    }
+    return copy;
+};
+exports.shuffleFast = shuffleFast;
 const zip = (firstCollection, lastCollection) => {
     const length = Math.min(firstCollection.length, lastCollection.length);
     const zipped = [];

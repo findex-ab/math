@@ -1,3 +1,4 @@
+import { clamp } from './etc';
 import { hashu32_v1, toUint32 } from './hash';
 export const range = (n) => n <= 0 || typeof n !== 'number' || isNaN(n) || !isFinite(n)
     ? []
@@ -111,6 +112,18 @@ export const shuffle = (arr, seed = 5013.18138) => {
         return z - w;
     });
     return indices.map((i) => arr[i]);
+};
+export const shuffleFast = (array, random = () => Math.random()) => {
+    const copy = [...array];
+    let currentIndex = copy.length;
+    while (currentIndex != 0) {
+        let randomIndex = Math.floor(clamp(random(currentIndex), 0.0, 1.0) * currentIndex);
+        currentIndex--;
+        [copy[currentIndex], copy[randomIndex]] = [
+            copy[randomIndex], copy[currentIndex]
+        ];
+    }
+    return copy;
 };
 export const zip = (firstCollection, lastCollection) => {
     const length = Math.min(firstCollection.length, lastCollection.length);
