@@ -81,6 +81,8 @@ export const unique = <T>(arr: T[]): T[] =>
 export const chunkify = <T = any>(arr: T[], chunkSize: number = 2): T[][] => {
   const result: T[][] = [];
 
+  if (arr.length <= 0 || chunkSize <= 0) return result;
+
   for (let i = 0; i < arr.length; i += chunkSize) {
     const part = arr.slice(i, i + chunkSize);
     result.push(part);

@@ -63,6 +63,8 @@ const unique = (arr) => [...Array.from(new Set(arr))];
 exports.unique = unique;
 const chunkify = (arr, chunkSize = 2) => {
     const result = [];
+    if (arr.length <= 0 || chunkSize <= 0)
+        return result;
     for (let i = 0; i < arr.length; i += chunkSize) {
         const part = arr.slice(i, i + chunkSize);
         result.push(part);
